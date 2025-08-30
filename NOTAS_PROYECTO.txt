@@ -1,0 +1,34 @@
+NOTAS DEL PROYECTO - SISTEMA VETERINARIA
+========================================
+
+ESTADO ACTUAL:
+- Sistema base implementado y funcional.
+- Estructura de clases definidas, cada una con atributos privados (Veterinaraia,
+Cliente, Mascota, Servicio.)
+- Funcionalidades principales como agregear (Cliente, Mascota, Servicio) y
+mostrar.
+- Contiene una anidación con la siguiente jerarquia: 
+Veterinarai->Cliente->Mascota->Servicio.
+- Se incluye un menu para realizar las funciones integradas.
+- Se utiliza sobrecarga de metodos.
+- Incluye datos iniciales dentro del codigo.
+- Incluye un HashMap mediante el uso del rut de cada cliente.
+
+MEJORAS FUTURAS PLANIFICADAS:
+- Implementar y diseñar un digrama de clases UML.
+- Utilizar archivos de texto y utlizas sitema batch.
+- Implementar funciones de edición/modificación y eliminación.
+- Implementar un manejo mas solido de excepciones y errores.
+- Implementar funcionalidades de busqueda.
+
+NOTAS TÉCNICAS:
+- Versión Java: JDK11
+- IDE: NetBeans IDE21
+- Repositorio: GitHub
+
+HISTORIAL DE COMMITS:
+1. Initial commit - Proyecto inicial
+2. Add README.md - Documentación básica
+3. Add project notes - Notas y mejoras planificadas
+
+FECHA DE ÚLTIMA ACTUALIZACIÓN: 30-08-2025
