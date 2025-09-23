@@ -1,5 +1,5 @@
 //Clase Mascota, ultima revisión: 29-08-2025
-package proyectosia;
+package modelo;
 import java.util.ArrayList;
 
 public class Mascota {
@@ -21,48 +21,30 @@ public class Mascota {
     }
 
 //=========================== GETTER Y SETTER ==================================
-    public String getNombre() {
-        return nombre; 
-    }
+    public String getNombre() {return nombre;}
     
-    public void setNombre(String nombre) {
-        this.nombre = nombre; 
-    }
+    public void setNombre(String nombre) {this.nombre = nombre;}
     
-    public String getTipo() {
-        return tipo; 
-    }
+    public String getTipo() {return tipo;}
     
-    public void setTipo(String tipo) {
-        this.tipo = tipo; 
-    }
+    public void setTipo(String tipo) {this.tipo = tipo;}
     
-    public String getRaza() {
-        return raza; 
-    }
+    public String getRaza() {return raza;}
     
-    public void setRaza(String raza) {
-        this.raza = raza; 
-    }
+    public void setRaza(String raza) {this.raza = raza;}
     
-    public int getEdad() {
-        return edad; 
-    }
+    public int getEdad() {return edad;}
     
-    public void setEdad(int edad) {
-        this.edad = edad; 
-    }
+    public void setEdad(int edad) {this.edad = edad;}
 
-    public ArrayList<Servicio> getServicios() {
-        return servicios; 
-    }
+    public ArrayList<Servicio> getServicios() {return servicios; }
     
 //================================ METODOS =====================================   
     public void agregarServicio(Servicio servicio) { //Para agregar un servicio a la mascota ya creado
         servicios.add(servicio); 
     }
     
-    public void agregarServicio(String tipoServicio, String fechaHora, String descripcion, int precio, String estado){ //Para agregar un servicio a la mascota a partir de parametros ingresados
-        servicios.add(new Servicio(tipoServicio, fechaHora, descripcion, precio, estado));
+    public void agregarServicio(String tipoServicio, String fecha, String hora, String descripcion, int precio, String estado){ //Para agregar un servicio a la mascota a partir de parametros ingresados
+        servicios.add(new Servicio(tipoServicio, fecha, hora, descripcion, precio, estado));
     }
 }

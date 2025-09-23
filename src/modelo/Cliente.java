@@ -1,5 +1,5 @@
 //Clase Cliente, ultima revisión: 29-08-2025
-package proyectosia;
+package modelo;
 import java.util.ArrayList;
 
 public class Cliente {
@@ -21,13 +21,9 @@ public class Cliente {
     }
     
 //=========================== GETTER Y SETTER ==================================
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() {return nombre;}
     
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    } 
+    public void setNombre(String nombre) {this.nombre = nombre;} 
     
     public String getRut() {
         return rut;
@@ -73,5 +69,27 @@ public class Cliente {
             }
         }
         return null;
-    }   
+    }
+    
+    public boolean eliminarMascota(String nombreMascota){
+        for(Mascota mascota : mascotas){
+            if(mascota.getNombre().equalsIgnoreCase(nombreMascota)){
+                mascotas.remove(mascota);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean editarMascota(String nombre, String tipo, String raza, int edad){
+        for(Mascota mascota : mascotas){
+            if(mascota.getNombre().equalsIgnoreCase(nombre)){
+                mascota.setTipo(tipo);
+                mascota.setRaza(raza);
+                mascota.setEdad(edad);
+                return true;
+            }
+        }
+        return false;
+    }
 }
