@@ -1,3 +1,4 @@
+//Rev.24-09
 package vista;
 
 public class VentanaAgregarMascota extends javax.swing.JFrame {
@@ -6,28 +7,16 @@ public class VentanaAgregarMascota extends javax.swing.JFrame {
         initComponents();
     }
        
-    public javax.swing.JTextField getjTextFieldRutDueno() {
-        return jTextFieldRutDueno;
-    }
-    public javax.swing.JTextField getjTextFieldNombre() {
-        return jTextFieldNombre;
-    }
-    public javax.swing.JTextField getjTextFieldTipo() {
-        return jTextFieldTipo;
-    }
-    public javax.swing.JTextField getjTextFieldRaza() {
-        return jTextFieldRaza;
-    }
-    public javax.swing.JTextField getjTextFieldEdad() {
-        return jTextFieldEdad;
-    }    
-    public javax.swing.JButton getjButtonAgregar() {
-        return jButtonAgregar;
-    }
-    public javax.swing.JButton getjButtonCancelar() {
-        return jButtonCancelar;
-    }    
+    public javax.swing.JTextField getjTextFieldRutDueno() {return jTextFieldRutDueno;}
+    public javax.swing.JTextField getjTextFieldNombre() {return jTextFieldNombre;}
+    public javax.swing.JTextField getjTextFieldTipo() {return jTextFieldTipo;}
+    public javax.swing.JTextField getjTextFieldRaza() {return jTextFieldRaza;}
+    public javax.swing.JTextField getjTextFieldEdad() {return jTextFieldEdad;}    
+    public javax.swing.JButton getjButtonAgregar() {return jButtonAgregar;}
+    public javax.swing.JButton getjButtonCancelar() {return jButtonCancelar;}    
 
+//============================  CODIGO AUTOMATICO  =============================
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

@@ -1,8 +1,10 @@
+//Rev.24-09
 package controlador;
 
 import java.awt.event.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import modelo.*;
 import vista.*;
 import java.util.List;
@@ -27,10 +29,13 @@ public class ControladorVeterinaria implements ActionListener {
     //SERVICIOS
     private VentanaAgregarServicio agregarServicio;
     private VentanaBuscarServicio buscarServicio;
+    private VentanaEditarServicio editarServicio;
+    private VentanaEliminarServicio eliminarServicio;
     
     //REPORTES
     private VentanaListarClientes listarClientes;
     private VentanaListarMascotas listarMascotas;
+    private VentanaListarServicios listarServicios;
     
     public void iniciar() {
         veterinaria = new Veterinaria(); //Iniciar veterinaria
@@ -57,10 +62,13 @@ public class ControladorVeterinaria implements ActionListener {
         //SERVICIOS
         main.getjMenuItemAgregarServicio().addActionListener(this);
         main.getjMenuItemBuscarServicio().addActionListener(this);
+        main.getjMenuItemEditarServicio().addActionListener(this);
+        main.getjMenuItemEliminarServicio().addActionListener(this);
         
         //REPORTES
         main.getjMenuItemListarClientes().addActionListener(this);
         main.getjMenuItemListarMascotas().addActionListener(this);
+        main.getjMenuItemListarServicios().addActionListener(this);
         
         //SALIR
         main.getjMenuItemSalir().addActionListener(this);
@@ -151,7 +159,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }      
         
-        //EDITAR CLIENTE - BUSCAR
+        //EDITAR CLIENTE - BOTÓN BUSCAR
         if(editarCliente != null && ae.getSource() == editarCliente.getBtnBuscar()){
             String rut = editarCliente.getTxtRut().getText();
             Cliente cliente = veterinaria.buscarClientePorRut(rut);
@@ -168,7 +176,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
         
-        //EDITAR CLIENTE - GUARDAR
+        //EDITAR CLIENTE - BOTÓN GUARDAR
         if(editarCliente != null && ae.getSource() == editarCliente.getBtnGuardar()){
             String rut = editarCliente.getTxtRut().getText();
             String nombre = editarCliente.getTxtNombre().getText();
@@ -185,7 +193,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
         
-        //EDITAR CLIENTE - CANCELAR
+        //EDITAR CLIENTE - BOTÓN CANCELAR
         if(editarCliente != null && ae.getSource() == editarCliente.getBtnCancelar()){
             editarCliente.dispose();
             return;
@@ -201,7 +209,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }     
         
-        //ELIMINAR CLIENTE - BUSCAR
+        //ELIMINAR CLIENTE - BOTÓN BUSCAR
         if(eliminarCliente != null && ae.getSource() == eliminarCliente.getBtnBuscar()){
             String rut = eliminarCliente.getTxtRut().getText();
             Cliente cliente = veterinaria.buscarClientePorRut(rut);
@@ -219,7 +227,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
         
-        //ELIMINAR CLIENTE - ELIMINAR
+        //ELIMINAR CLIENTE - BOTÓN ELIMINAR
         if(eliminarCliente != null && ae.getSource() == eliminarCliente.getBtnEliminar()){
             String rut = eliminarCliente.getTxtRut().getText();
             int numMascotas = Integer.parseInt(eliminarCliente.getTxtNumMascotas().getText());
@@ -240,7 +248,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         } 
         
-        //ELIMINAR CLIENTE - CANCELAR
+        //ELIMINAR CLIENTE - BOTÓN CANCELAR
         if(eliminarCliente != null && ae.getSource() == eliminarCliente.getBtnCancelar()){
             eliminarCliente.dispose();
             return;
@@ -333,7 +341,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         } 
         
-        //EDITAR MASCOTA - BUSCAR
+        //EDITAR MASCOTA - BOTÓN BUSCAR
         if(editarMascota != null && ae.getSource() == editarMascota.getBtnBuscar()){
             String rutDueno = editarMascota.getTxtRutDueno().getText();
             String nombreMascota = editarMascota.getTxtNombreMascota().getText();
@@ -358,7 +366,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
         
-        //EDITAR MASCOTA - BOTON GUARDAR        
+        //EDITAR MASCOTA - BOTÓN GUARDAR        
         if(editarMascota != null && ae.getSource() == editarMascota.getBtnGuardar()){
             String rutDueno = editarMascota.getTxtRutDueno().getText();
             String nombreMascota = editarMascota.getTxtNombreMascota().getText();
@@ -392,7 +400,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
         
-        //ELIMINAR MASCOTA - BUSCAR
+        //ELIMINAR MASCOTA - BOTÓN BUSCAR
         if(eliminarMascota != null && ae.getSource() == eliminarMascota.getBtnBuscar()){
             String rutDueno = eliminarMascota.getTxtRutDueno().getText();
             String nombreMascota = eliminarMascota.getTxtNombre().getText();
@@ -418,7 +426,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
         
-        //ELIMINAR MASCOTA - ELIMINAR
+        //ELIMINAR MASCOTA - BOTÓN ELIMINAR
         if(eliminarMascota != null && ae.getSource() == eliminarMascota.getBtnEliminar()){
             String rutDueno = eliminarMascota.getTxtRutDueno().getText();
             String nombreMascota = eliminarMascota.getTxtNombre().getText();
@@ -438,7 +446,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
         
-        //ELIMINAR MASCOTA - CANCELAR
+        //ELIMINAR MASCOTA - BOTÓN CANCELAR
         if(eliminarMascota != null && ae.getSource() == eliminarMascota.getBtnCancelar()){
             eliminarMascota.dispose();
             return;
@@ -470,7 +478,9 @@ public class ControladorVeterinaria implements ActionListener {
                 agregarServicio.limpiarMascotas();
             }
             return;
-        }  
+        }
+        
+        //AGREGAR SERVICIO - BOTÓN AGREGAR
         if(agregarServicio != null && ae.getSource() == agregarServicio.getBtnAgregar()){
             String rutDueno = agregarServicio.getTxtRutDueno().getText();
             String nombreMascota = (String)agregarServicio.getComboMascotas().getSelectedItem();
@@ -587,6 +597,225 @@ public class ControladorVeterinaria implements ActionListener {
             buscarServicio.dispose();
             return;
         }
+        
+        //=====================  EDITAR SERVICIO  ==============================
+        if(ae.getSource() == main.getjMenuItemEditarServicio()){
+            editarServicio = new VentanaEditarServicio();
+            editarServicio.getBtnBuscarCliente().addActionListener(this);
+            editarServicio.getBtnBuscarMascota().addActionListener(this);
+            editarServicio.getBtnGuardar().addActionListener(this);
+            editarServicio.getBtnCancelar().addActionListener(this);
+            //Listener para tabla
+            editarServicio.getTblServicios().getSelectionModel().addListSelectionListener(e->{
+                if(!e.getValueIsAdjusting()){
+                    manejarSeleccionServicio();
+                }
+            });
+            editarServicio.setVisible(true);
+            return;
+        }
+        
+        //EDITAR SERVICIO - BOTÓN BUSCAR CLIENTE
+        if(editarServicio != null && ae.getSource() == editarServicio.getBtnBuscarCliente()){
+            String rutCliente = editarServicio.getTxtRutCliente().getText().trim();
+            if(rutCliente.isEmpty()){
+                JOptionPane.showMessageDialog(editarServicio, "Por favor ingresa un RUT");
+                return;
+            }
+            Cliente cliente = veterinaria.buscarClientePorRut(rutCliente);
+            if(cliente != null){
+                editarServicio.cargarMascotasDelCliente(cliente);
+                JOptionPane.showMessageDialog(editarServicio, "Cliente encontrado, selecciona una mascota");
+            }
+            else{
+                JOptionPane.showMessageDialog(editarServicio, "Cliente no encontrado");
+                editarServicio.limpiarCampos();
+            }
+            return;
+        }
+        
+        //EDITAR SERVICIO - BOTÓN BUSCAR MASCOTA
+        if(editarServicio != null && ae.getSource() == editarServicio.getBtnBuscarMascota()){
+            String rutCliente = editarServicio.getTxtRutCliente().getText().trim();
+            String nombreMascota = "";
+            
+            if(editarServicio.getComboMascotas().getSelectedItem() != null){
+                nombreMascota = editarServicio.getComboMascotas().getSelectedItem().toString();
+            }
+            else{
+                JOptionPane.showMessageDialog(editarServicio, "Selecciona una mascota");
+                return;
+            }
+            
+            if(rutCliente.isEmpty() || nombreMascota.isEmpty()){
+                JOptionPane.showMessageDialog(editarServicio, "Completar RUT y seleccionar mascota");
+                return;
+            }  
+            List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
+            if(!servicios.isEmpty()){
+                editarServicio.cargarServiciosDeMascota(servicios);
+                JOptionPane.showMessageDialog(editarServicio, "Se encontraron " + servicios.size() + " servicios");
+            }
+            else{
+                JOptionPane.showMessageDialog(editarServicio, "No se encontraron servicios");
+                editarServicio.limpiarCampos();
+            }
+            return;
+        }
+        
+        //EDITAR SERVICIO - BOTÓN GUARDAR
+        if(editarServicio != null && ae.getSource() == editarServicio.getBtnGuardar()){
+            int indiceSeleccionado = editarServicio.getIndiceServicioSeleccionado();
+            if(indiceSeleccionado < 0){
+                JOptionPane.showMessageDialog(editarServicio, "Selecciona un servicio de la tabla");
+                return;
+            }
+            String rutCliente = editarServicio.getTxtRutCliente().getText().trim();
+            String nombreMascota = editarServicio.getComboMascotas().getSelectedItem().toString();
+            String tipoServicio = editarServicio.getTxtTipoServicio().getText();
+            String fecha = editarServicio.getTxtFecha().getText();
+            String hora = editarServicio.getTxtHora().getText();
+            String descripcion = editarServicio.getTxtDescripcion().getText();
+            String precioTexto = editarServicio.getTxtPrecio().getText().trim();
+            String estado = (String)editarServicio.getComboEstado().getSelectedItem();
+            
+            if(tipoServicio.isEmpty() || fecha.isEmpty() || hora.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty()){
+                JOptionPane.showMessageDialog(editarServicio, "Completa todos los campos");
+                return;
+            }
+            int precio = 0;
+            try{
+                precio = Integer.parseInt(precioTexto);
+                if(precio <= 0){
+                    JOptionPane.showMessageDialog(editarServicio, "El precio debe ser mayor a 0");
+                    return;
+                }
+            } catch(NumberFormatException e){
+                JOptionPane.showMessageDialog(editarServicio, "El precio debe ser un número valido");
+                return;
+            }
+            
+            Servicio servicioActualizado = new Servicio(tipoServicio, fecha, hora, descripcion, precio, estado);
+            if(veterinaria.editarServicio(rutCliente, nombreMascota, indiceSeleccionado, servicioActualizado)){
+                JOptionPane.showMessageDialog(editarServicio, "Servicio actualizado correctamente");
+                List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
+                editarServicio.cargarServiciosDeMascota(servicios);
+                editarServicio.limpiarCampos();
+            }
+            else{
+                JOptionPane.showMessageDialog(editarServicio, "Error al editar el servicio");
+            }
+            return;
+        }
+        
+        //EDTIAR SERVICIO - BOTÓN CANCELAR
+        
+        if(editarServicio != null && ae.getSource() == editarServicio.getBtnCancelar()){
+            editarServicio.dispose();
+            return;
+        }   
+        
+        //====================  ELIMINAR SERVICIO  =============================    
+        if(ae.getSource() == main.getjMenuItemEliminarServicio()){
+            eliminarServicio = new VentanaEliminarServicio();
+            eliminarServicio.getBtnBuscarCliente().addActionListener(this);
+            eliminarServicio.getBtnBuscarMascota().addActionListener(this);
+            eliminarServicio.getBtnEliminar().addActionListener(this);
+            eliminarServicio.getBtnCancelar().addActionListener(this);
+            
+            eliminarServicio.getTblServicios().getSelectionModel().addListSelectionListener(e->{
+                if(!e.getValueIsAdjusting()){
+                    manejarSeleccionServicioEliminar();
+                }
+            });
+            eliminarServicio.setVisible(true);
+            return;
+        }
+        
+        //ELIMINAR SERVICIO - BOTÓN BUSCAR CLIENTE
+        if(eliminarServicio != null && ae.getSource() == eliminarServicio.getBtnBuscarCliente()){
+            String rutCliente = eliminarServicio.getTxtRutCliente().getText().trim();
+            if(rutCliente.isEmpty()){
+                JOptionPane.showMessageDialog(eliminarServicio, "Por favor ingresa RUT");
+                return;
+            }
+            Cliente cliente = veterinaria.buscarClientePorRut(rutCliente);
+            if(cliente != null){
+                eliminarServicio.cargarMascotasDelCliente(cliente);
+                JOptionPane.showMessageDialog(eliminarServicio, "Cliente encontrado");
+            }
+            else{
+                JOptionPane.showMessageDialog(eliminarServicio, "Cliente no encontrado");
+                eliminarServicio.limpiarCampos();
+            }
+            return;
+        }
+        
+        //ELIMINAR SERVICIO - BOTÓN BUSCAR MASCOTA
+        if(eliminarServicio != null && ae.getSource() == eliminarServicio.getBtnBuscarMascota()){
+            String rutCliente = eliminarServicio.getTxtRutCliente().getText().trim();
+            String nombreMascota = "";
+            
+            if(eliminarServicio.getComboMascotas().getSelectedItem() != null){
+                nombreMascota = eliminarServicio.getComboMascotas().getSelectedItem().toString();
+            }
+            else{
+                JOptionPane.showMessageDialog(eliminarServicio, "Seleccione una mascota");
+                return;
+            }
+            List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
+            if(!servicios.isEmpty()){
+                eliminarServicio.cargarServiciosDeMascota(servicios);
+                JOptionPane.showMessageDialog(eliminarServicio, "Se encontraron " + servicios.size() + " servicios");
+            }
+            else{
+                JOptionPane.showMessageDialog(eliminarServicio, "No se encontraron servicios");
+                eliminarServicio.limpiarCampos();
+            }
+            return;
+        }
+        
+        //ELIMINAR SERVICIO - BOTÓN ELIMINAR
+        if(eliminarServicio != null && ae.getSource() == eliminarServicio.getBtnEliminar()){
+            int indiceSeleccionado = eliminarServicio.getIndiceServicioSeleccionado();
+            if(indiceSeleccionado < 0){
+                JOptionPane.showMessageDialog(eliminarServicio, "Seleccione un servicio");
+                return;
+            }
+            String rutCliente = eliminarServicio.getTxtRutCliente().getText().trim();
+            String nombreMascota = eliminarServicio.getComboMascotas().getSelectedItem().toString();
+            DefaultTableModel modelo = (DefaultTableModel) eliminarServicio.getTblServicios().getModel();
+            String tipoServicio = modelo.getValueAt(indiceSeleccionado, 0).toString();
+            String fecha = modelo.getValueAt(indiceSeleccionado, 1).toString();
+            int confirmacion = JOptionPane.showConfirmDialog(
+                eliminarServicio,
+                "¿Está seguro de que desea eliminar el servicio?\n" +     
+                "Tipo: " + tipoServicio + "\n" +
+                "Fecha: " + fecha + "\n" +
+                "Esta acción no se puede deshacer.",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+            if(confirmacion == JOptionPane.YES_OPTION){
+                if(veterinaria.eliminarServicio(rutCliente, nombreMascota, indiceSeleccionado)){
+                    JOptionPane.showMessageDialog(eliminarServicio, "Servicio eliminado exitosamente");
+                    List<Servicio> serviciosActualizados = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
+                    eliminarServicio.cargarServiciosDeMascota(serviciosActualizados);
+                    eliminarServicio.limpiarCampos();
+                }
+                else{
+                    JOptionPane.showMessageDialog(eliminarServicio, "Errora al eliminar el servicio");
+                }
+            }
+            return;
+        }
+        
+        //ELIMINAR SERVICIO - BOTÓN CANCELAR
+        if(eliminarServicio != null && ae.getSource() == eliminarServicio.getBtnCancelar()){
+            eliminarServicio.dispose();
+            return;
+        }
     
 //==============================  MENU REPORTES  ===============================
         
@@ -602,7 +831,14 @@ public class ControladorVeterinaria implements ActionListener {
             listarMascotas = new VentanaListarMascotas(veterinaria);
             listarMascotas.setVisible(true);
             return;
-        }       
+        }    
+        
+        //LISTAR SERVICIOS
+        if(ae.getSource() == main.getjMenuItemListarServicios()){
+            listarServicios = new VentanaListarServicios(veterinaria);
+            listarServicios.setVisible(true);
+            return;
+        }
 
 //===============================  MENU SALIR  =================================
         
@@ -615,4 +851,33 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
     }  
+
+//=======================  METODOS AUXILIARES  =================================
+    private void manejarSeleccionServicio() {
+        if(editarServicio != null){
+            int filaSeleccionada = editarServicio.getTblServicios().getSelectedRow();
+            if(filaSeleccionada >= 0){
+                javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel)editarServicio.getTblServicios().getModel();
+                String tipo = modelo.getValueAt(filaSeleccionada, 0).toString();
+                String fecha = modelo.getValueAt(filaSeleccionada, 1).toString();
+                String hora = modelo.getValueAt(filaSeleccionada, 2).toString();
+                String descripcion = modelo.getValueAt(filaSeleccionada, 3).toString();
+                int precio = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 4).toString());
+                String estado = modelo.getValueAt(filaSeleccionada, 5).toString();
+                
+                Servicio servicio = new Servicio(tipo, fecha, hora, descripcion, precio, estado);
+                editarServicio.mostrarServicioEnCampos(servicio);
+                editarServicio.setIndiceServicioSeleccionado(filaSeleccionada);
+            }
+        }
+    }
+    
+    private void manejarSeleccionServicioEliminar() {
+        if(eliminarServicio != null){
+            int filaSeleccionada = eliminarServicio.getTblServicios().getSelectedRow();
+            if(filaSeleccionada >= 0){
+                eliminarServicio.mostrarServicioSeleccionado(filaSeleccionada);
+            }
+        }
+    }
 }

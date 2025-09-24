@@ -73,6 +73,16 @@
                 <Property name="text" type="java.lang.String" value="Buscar Servicio"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemEditarServicio">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Editar Servicio"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemEliminarServicio">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Eliminar Servicio"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu5">
@@ -88,6 +98,11 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemListarMascotas">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Listar Mascotas"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemListarServicios">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Listar Servicios"/>
               </Properties>
             </MenuItem>
           </SubComponents>

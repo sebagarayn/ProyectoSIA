@@ -1,3 +1,4 @@
+//Rev.24-09
 package vista;
 
 public class VentanaBuscarMascota extends javax.swing.JFrame {
@@ -6,18 +7,10 @@ public class VentanaBuscarMascota extends javax.swing.JFrame {
         initComponents();
     }
     
-    public javax.swing.JTextField getTxtRutDueno() {
-        return txtRutDueno;
-    }
-    public javax.swing.JTextField getTxtNombreMascota() {
-        return txtNombreMascota;
-    }
-    public javax.swing.JButton getBtnBuscar() {
-        return btnBuscar;
-    }
-    public javax.swing.JButton getBtnCancelar() {
-        return btnCancelar;
-    } 
+    public javax.swing.JTextField getTxtRutDueno() {return txtRutDueno;}
+    public javax.swing.JTextField getTxtNombreMascota() {return txtNombreMascota;}
+    public javax.swing.JButton getBtnBuscar() {return btnBuscar;}
+    public javax.swing.JButton getBtnCancelar() {return btnCancelar;} 
     
 //==============================================================================
     

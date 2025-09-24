@@ -1,3 +1,4 @@
+//Rev.24-09
 package vista;
 
 public class VentanaEditarCliente extends javax.swing.JFrame {

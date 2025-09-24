@@ -1,4 +1,4 @@
-//Clase Servicio, ultima revision: 29-08-2025
+//Rev.24-09
 package modelo;
 
 public class Servicio {
@@ -23,27 +23,16 @@ public class Servicio {
     }
 
 //=========================== GETTER Y SETTER ==================================
-    public String getTipoServicio() {return tipoServicio;}
-    
-    public void setTipoServicio(String tipo) {this.tipoServicio = tipo;}
-    
-    public String getFecha() {return fecha;}
-    
-    public void setFecha(String fecha) {this.fecha = fecha;}
-    
-    public String getHora() {return hora;};
-    
-    public void setHora(String hora) {this.hora = hora;};
-    
-    public String getDescripcion() {return descripcion;}
-    
-    public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
-    
-    public int getPrecio() {return precio;}
-    
-    public void setPrecio(int precio) {this.precio = precio;}
-    
-    public String getEstado() {return estado;}
-    
+    public String getTipoServicio() {return tipoServicio;}   
+    public void setTipoServicio(String tipo) {this.tipoServicio = tipo;}    
+    public String getFecha() {return fecha;}    
+    public void setFecha(String fecha) {this.fecha = fecha;}    
+    public String getHora() {return hora;};    
+    public void setHora(String hora) {this.hora = hora;};    
+    public String getDescripcion() {return descripcion;}    
+    public void setDescripcion(String descripcion) {this.descripcion = descripcion;}    
+    public int getPrecio() {return precio;}    
+    public void setPrecio(int precio) {this.precio = precio;}    
+    public String getEstado() {return estado;}    
     public void setEstado(String estado) {this.estado = estado;}   
 }

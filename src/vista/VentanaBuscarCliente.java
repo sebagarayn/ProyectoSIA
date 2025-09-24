@@ -1,3 +1,4 @@
+//Rev.24-09
 package vista;
 
 public class VentanaBuscarCliente extends javax.swing.JFrame {
@@ -6,15 +7,9 @@ public class VentanaBuscarCliente extends javax.swing.JFrame {
         initComponents();
     }
     
-    public javax.swing.JTextField getjTextFieldRut() {
-        return jTextFieldRut;
-    }
-    public javax.swing.JButton getjButtonBuscar() {
-        return jButtonBuscar;
-    }
-    public javax.swing.JButton getjButtonCancelar() {
-        return jButtonCancelar;
-    } 
+    public javax.swing.JTextField getjTextFieldRut() {return jTextFieldRut;}
+    public javax.swing.JButton getjButtonBuscar() {return jButtonBuscar;}
+    public javax.swing.JButton getjButtonCancelar() {return jButtonCancelar;} 
 
 //==============================================================================
     @SuppressWarnings("unchecked")

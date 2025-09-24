@@ -1,4 +1,4 @@
-//Clase Veterinaria, ultima revision 29-08-2025
+//Rev.24-09
 package modelo;
 import java.util.List;
 import java.util.ArrayList;
@@ -16,13 +16,9 @@ public class Veterinaria {
     }
     
 //=========================== GETTER Y SETTER ==================================
-    public ArrayList<Cliente> getClientes(){
-        return listaClientes;
-    }
+    public ArrayList<Cliente> getClientes(){return listaClientes;}
     
-    public HashMap<String, Cliente> getMapaCliente(){
-        return mapaClientes;
-    }
+    public HashMap<String, Cliente> getMapaCliente(){return mapaClientes;}
     
 //=============================== METODOS ======================================
     public boolean agregarCliente(Cliente cliente){ //Para agregar clientes, verificando si ya existe el rut
@@ -95,6 +91,8 @@ public class Veterinaria {
         return false;
     }
     
+    //========================  METODOS PARA SERVICIOS =========================
+    
     public List<Servicio> buscarServiciosPorMascota(String rutCliente, String nombreMascota){
         Cliente cliente = buscarClientePorRut(rutCliente);
         if(cliente != null){
@@ -104,6 +102,28 @@ public class Veterinaria {
             }
         }
         return new ArrayList<>(); //Lista vacias
+    }
+    
+    public boolean editarServicio(String rutCliente, String nombreMascota, int indexServicio, Servicio servicioNuevo){
+        Cliente cliente = buscarClientePorRut(rutCliente);
+        if(cliente != null){
+            Mascota mascota = cliente.buscarMascotaPorNombre(nombreMascota);
+            if(mascota != null && indexServicio >= 0 && indexServicio < mascota.getServicios().size()){
+                return mascota.editarServicio(indexServicio, servicioNuevo);
+            }
+        }
+        return false;
+    }
+    
+    public boolean eliminarServicio(String rutCliente, String nombreMascota, int indiceServicio){
+        Cliente cliente = buscarClientePorRut(rutCliente);
+        if(cliente != null){
+            Mascota mascota = cliente.buscarMascotaPorNombre(nombreMascota);
+            if(mascota != null && indiceServicio >= 0 && indiceServicio < mascota.getServicios().size()){
+                return mascota.eliminarServicio(indiceServicio);
+            }
+        }
+        return false;
     }
     
 //==============================================================================

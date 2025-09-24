@@ -1,3 +1,4 @@
+//Rev.24-09
 package vista;
 
 import javax.swing.*;
@@ -81,6 +82,7 @@ public class VentanaBuscarServicio extends javax.swing.JFrame {
     public javax.swing.JButton getBtnCancelar() {return btnCancelar;}
     public javax.swing.JTable getTblServicios() {return tblServicios;}
 
+//============================  CODIGO AUTOMATICO  =============================
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

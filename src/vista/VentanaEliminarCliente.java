@@ -1,3 +1,4 @@
+//Rev.24-09
 package vista;
 
 public class VentanaEliminarCliente extends javax.swing.JFrame {

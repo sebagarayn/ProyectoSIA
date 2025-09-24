@@ -1,3 +1,4 @@
+//Rev.24-09
 package vista;
 
 public class VentanaMain extends javax.swing.JFrame {
@@ -41,6 +42,12 @@ public class VentanaMain extends javax.swing.JFrame {
     public javax.swing.JMenuItem getjMenuItemBuscarServicio() { //Submenu->Buscar Servicio
         return jMenuItemBuscarServicio;
     }
+    public javax.swing.JMenuItem getjMenuItemEditarServicio() { //Submenu->Editar Servicio
+        return jMenuItemEditarServicio;
+    }   
+    public javax.swing.JMenuItem getjMenuItemEliminarServicio() { //Submenu->Editar Servicio
+        return jMenuItemEliminarServicio;
+    }      
     
     //MENU REPORTES
     public javax.swing.JMenuItem getjMenuItemListarClientes() { //Submenu->Listar Clientes
@@ -48,7 +55,10 @@ public class VentanaMain extends javax.swing.JFrame {
     }   
     public javax.swing.JMenuItem getjMenuItemListarMascotas() { //Submenu->Listar Mascotas
         return jMenuItemListarMascotas;
-    }        
+    }    
+    public javax.swing.JMenuItem getjMenuItemListarServicios() { //Submenu->Listar Servicios
+        return jMenuItemListarServicios;
+    }     
     
     //MENU SALIR
     public javax.swing.JMenuItem getjMenuItemSalir() { //Submenu->Salir del Programa
@@ -75,9 +85,12 @@ public class VentanaMain extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenuItemAgregarServicio = new javax.swing.JMenuItem();
         jMenuItemBuscarServicio = new javax.swing.JMenuItem();
+        jMenuItemEditarServicio = new javax.swing.JMenuItem();
+        jMenuItemEliminarServicio = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         jMenuItemListarClientes = new javax.swing.JMenuItem();
         jMenuItemListarMascotas = new javax.swing.JMenuItem();
+        jMenuItemListarServicios = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItemSalir = new javax.swing.JMenuItem();
 
@@ -123,6 +136,12 @@ public class VentanaMain extends javax.swing.JFrame {
         jMenuItemBuscarServicio.setText("Buscar Servicio");
         jMenu3.add(jMenuItemBuscarServicio);
 
+        jMenuItemEditarServicio.setText("Editar Servicio");
+        jMenu3.add(jMenuItemEditarServicio);
+
+        jMenuItemEliminarServicio.setText("Eliminar Servicio");
+        jMenu3.add(jMenuItemEliminarServicio);
+
         jMenuBar1.add(jMenu3);
 
         jMenu5.setText("Reportes");
@@ -132,6 +151,9 @@ public class VentanaMain extends javax.swing.JFrame {
 
         jMenuItemListarMascotas.setText("Listar Mascotas");
         jMenu5.add(jMenuItemListarMascotas);
+
+        jMenuItemListarServicios.setText("Listar Servicios");
+        jMenu5.add(jMenuItemListarServicios);
 
         jMenuBar1.add(jMenu5);
 
@@ -173,10 +195,13 @@ public class VentanaMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemBuscarServicio;
     private javax.swing.JMenuItem jMenuItemEditarCliente;
     private javax.swing.JMenuItem jMenuItemEditarMascota;
+    private javax.swing.JMenuItem jMenuItemEditarServicio;
     private javax.swing.JMenuItem jMenuItemEliminarCliente;
     private javax.swing.JMenuItem jMenuItemEliminarMascota;
+    private javax.swing.JMenuItem jMenuItemEliminarServicio;
     private javax.swing.JMenuItem jMenuItemListarClientes;
     private javax.swing.JMenuItem jMenuItemListarMascotas;
+    private javax.swing.JMenuItem jMenuItemListarServicios;
     private javax.swing.JMenuItem jMenuItemSalir;
     // End of variables declaration//GEN-END:variables
 }

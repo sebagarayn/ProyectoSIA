@@ -1,3 +1,4 @@
+//Rev.24-09
 package vista;
 
 import modelo.Cliente;
@@ -63,31 +64,19 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
         comboEstado.setSelectedIndex(0); //Se vuelve a "Pendiente"
     }
     
-    public javax.swing.JTextField getTxtRutDueno() {
-        return txtRutDueno;
-    }
-    public JComboBox<String> getComboMascotas() {
-        return comboMascotas;
-    }
-    public javax.swing.JTextField getTxtTipoServicio() {
-        return txtTipoServicio;
-    }
-    public javax.swing.JTextField getTxtFecha() {
-        return txtFecha;
-    }
-    public javax.swing.JTextField getTxtHora() {
-        return txtHora;
-    }    
-    public javax.swing.JTextField getTxtDescripcion() {
-        return txtDescripcion;
-    } 
+    public javax.swing.JTextField getTxtRutDueno() {return txtRutDueno;}
+    public JComboBox<String> getComboMascotas() {return comboMascotas;}
+    public javax.swing.JTextField getTxtTipoServicio() {return txtTipoServicio;}
+    public javax.swing.JTextField getTxtFecha() {return txtFecha;}
+    public javax.swing.JTextField getTxtHora() {return txtHora;}    
+    public javax.swing.JTextField getTxtDescripcion() {return txtDescripcion;} 
     public javax.swing.JTextField getTxtPrecio() {return txtPrecio;}    
     public JComboBox<String> getComboEstado() {return comboEstado;}  
     public javax.swing.JButton getBtnBuscar() {return btnBuscar;}
     public javax.swing.JButton getBtnAgregar() {return btnAgregar;}
     public javax.swing.JButton getBtnCancelar() {return btnCancelar;}    
 
-//==============================================================================
+//=========================  CODIGO AUTOMATICO  ================================
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

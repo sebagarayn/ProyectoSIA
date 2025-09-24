@@ -1,3 +1,4 @@
+//Rev.24-09
 package vista;
 
 public class VentanaAgregarCliente extends javax.swing.JFrame {
@@ -6,24 +7,12 @@ public class VentanaAgregarCliente extends javax.swing.JFrame {
         initComponents();
     }
 
-    public javax.swing.JTextField getjTextFieldNombre() {
-        return jTextFieldNombre;
-    }
-    public javax.swing.JTextField getjTextFieldRut() {
-        return jTextFieldRut;
-    }
-    public javax.swing.JTextField getjTextFieldTelefono() {
-        return jTextFieldTelefono;
-    }
-    public javax.swing.JTextField getjTextFieldDireccion() {
-        return jTextField4;
-    }
-    public javax.swing.JButton getjButtonAgregar() {
-        return jButtonAgregar;
-    }
-    public javax.swing.JButton getjButtonCancelar() {
-        return jButtonCancelar;
-    }
+    public javax.swing.JTextField getjTextFieldNombre() {return jTextFieldNombre;}
+    public javax.swing.JTextField getjTextFieldRut() {return jTextFieldRut;}
+    public javax.swing.JTextField getjTextFieldTelefono() {return jTextFieldTelefono;}
+    public javax.swing.JTextField getjTextFieldDireccion() {return jTextDireccion;}
+    public javax.swing.JButton getjButtonAgregar() {return jButtonAgregar;}
+    public javax.swing.JButton getjButtonCancelar() {return jButtonCancelar;}
    
 //==============================================================================
     
@@ -38,7 +27,7 @@ public class VentanaAgregarCliente extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jTextFieldNombre = new javax.swing.JTextField();
         jTextFieldTelefono = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        jTextDireccion = new javax.swing.JTextField();
         jButtonAgregar = new javax.swing.JButton();
         jButtonCancelar = new javax.swing.JButton();
 
@@ -58,7 +47,7 @@ public class VentanaAgregarCliente extends javax.swing.JFrame {
 
         jTextFieldTelefono.setText("jTextField1");
 
-        jTextField4.setText("jTextField1");
+        jTextDireccion.setText("jTextField1");
 
         jButtonAgregar.setText("Agregar");
 
@@ -76,7 +65,7 @@ public class VentanaAgregarCliente extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
@@ -114,7 +103,7 @@ public class VentanaAgregarCliente extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAgregar)
@@ -132,7 +121,7 @@ public class VentanaAgregarCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextDireccion;
     private javax.swing.JTextField jTextFieldNombre;
     private javax.swing.JTextField jTextFieldRut;
     private javax.swing.JTextField jTextFieldTelefono;
