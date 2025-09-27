@@ -544,12 +544,22 @@ public class ControladorVeterinaria implements ActionListener {
             String descripcion = agregarServicio.getTxtDescripcion().getText();
             String precioTexto = agregarServicio.getTxtPrecio().getText().trim();
             String estado = (String)agregarServicio.getComboEstado().getSelectedItem();
+            boolean esUrgencia = agregarServicio.getChkEsUrgencia().isSelected();
             
             if(rutDueno.isEmpty() || nombreMascota == null || tipoServicio.isEmpty() ||
                 fecha.isEmpty() || hora.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty()){
                 JOptionPane.showMessageDialog(agregarServicio, "Por favor, completa todos los campos");
                 return;
             }
+            
+            if(esUrgencia){
+                String motivoUrgencia = agregarServicio.getTxtMotivoUrgencia().getText().trim();
+                if(motivoUrgencia.isEmpty()){
+                    JOptionPane.showMessageDialog(agregarServicio, "El motivo de urgencia es requerido para servicios de urgencia");
+                    return;
+               } 
+            }
+            
             int precio = 0 ;
             try{
                 precio = Integer.parseInt(precioTexto);
@@ -574,33 +584,65 @@ public class ControladorVeterinaria implements ActionListener {
                     double factorMascota = mascota.calcularFactorPrecio();
                     int precioFinal = (int)(precioConDescuento * factorMascota);
                     
-                    mascota.agregarServicio(tipoServicio, fecha, hora, descripcion, precioFinal, estado);
-                    boolean promocionado = veterinaria.verificarPromocionAutomatica(rutDueno);
-                    String mensaje = "Servicio agregado correctamente";
-                    if(precioFinal < precio){
-                        mensaje += "\n\n=== DESCUENTOS APLICADOS ===";
-                        mensaje += "\nTipo Cliente: " + dueno.obtenerTipoCliente();
-                        mensaje += "\nPrecio Original: $" + precio;
-                        if(precioConDescuento < precio){
-                            mensaje += "\nDescuento cliente: $" + precioConDescuento + " (" + (int)(dueno.calcularDescuento() * 100) + "%)";                                 
+                    if(esUrgencia){
+                        int nivelUrgencia = Integer.parseInt((String)agregarServicio.getComboNivelUrgencia().getSelectedItem());
+                        String motivoUrgencia = agregarServicio.getTxtMotivoUrgencia().getText();
+                        boolean requiereAtencionInmediata = agregarServicio.getChkAtencionInmediata().isSelected();
+                        ServicioUrgencia servicioUrgencia = new ServicioUrgencia(
+                                tipoServicio, fecha, hora, descripcion, precioFinal, estado,
+                                nivelUrgencia, motivoUrgencia, requiereAtencionInmediata);
+                        mascota.agregarServicio(servicioUrgencia);        
+                        String mensaje = "Servicio de urgencia agregado correctamente\n\n";
+                        mensaje += "=== DETALLES DE URGENCIA ===\n";
+                        mensaje += "Nivel: " + nivelUrgencia + "/5\n";
+                        mensaje += "Motivo: " + motivoUrgencia + "\n";
+                        mensaje += "Atención inmediata: " + (requiereAtencionInmediata ? "SÍ" : "NO") + "\n";
+                        int precioConRecargo = servicioUrgencia.calcularPrecioFinal();
+                        double porcentajeRecargo = ((double)precioConRecargo / precioFinal - 1) * 100;
+                        mensaje += "Recargo aplicado: " + (int)porcentajeRecargo + "%\n";
+                        if(precioFinal < precio){
+                            mensaje += "\nPrecio original: $" + precio;
+                            mensaje += "\nPrecio con descuentos: $" + precioFinal; 
                         }
-                        if (factorMascota < 1.0) {
-                           mensaje += "\nDescuento mascota: " + (int)((1 - factorMascota) * 100) + "%"; 
+                        mensaje += "\nPrecio final con urgencia: $" + precioConRecargo;
+                        mensaje += "\n\n=== INSTRUCCIONES ===\n";
+                        mensaje += servicioUrgencia.obtenerInstruccionesEspeciales();
+                        if (servicioUrgencia.esEmergenciaCritica()) {
+                            mensaje += "\n\n⚠️ EMERGENCIA CRÍTICA - PRIORIDAD MÁXIMA ⚠️";
+                            JOptionPane.showMessageDialog(agregarServicio, mensaje, "Servicio de Urgencia Crítica", JOptionPane.ERROR_MESSAGE);
                         }
-                        mensaje += "\nPrecio final: $" + precioFinal;
+                        else{
+                            JOptionPane.showMessageDialog(agregarServicio, mensaje, "Servicio de Urgencia", JOptionPane.WARNING_MESSAGE);
+
+                        }
                     }
-                    JOptionPane.showMessageDialog(agregarServicio, mensaje);
-                    
-                    if (promocionado) {
-                        Cliente clientePromovido = veterinaria.buscarClientePorRut(rutDueno);
-                        JOptionPane.showMessageDialog(agregarServicio, 
-                        "¡PROMOCION AUTOMATICA!\n\n" +
-                        clientePromovido.getNombre() + "ahora es CLIENTE FRECUENTE\n\n" +
-                        "Beneficios obtenidos:\n" +
-                        "Descuento automatco:" + (int)(clientePromovido.calcularDescuento() * 100) + "%\n" +
-                        clientePromovido.obtenerBeneficios() + "\n\n" +
-                        "¡Los próximos servicios tendrán descuento automático!",
-                        "Cliente Frecuente", JOptionPane.INFORMATION_MESSAGE);
+                    else{
+                        mascota.agregarServicio(tipoServicio, fecha, hora, descripcion, precioFinal, estado);
+                        String mensaje = "Servicio agregado correctamente";
+                        if(precioFinal < precio){
+                            mensaje += "\n\n=== DESCUENTOS APLICADOS ===";
+                            mensaje += "\nTipo Cliente: " + dueno.obtenerTipoCliente();
+                            mensaje += "\nPrecio Original: $" + precio;
+                            if(precioConDescuento < precio){
+                                mensaje += "\nDescuento cliente: $" + precioConDescuento + " (" + (int)(dueno.calcularDescuento() * 100) + "%)";                             
+                            }
+                            if (factorMascota < 1.0) {
+                                mensaje += "\nDescuento mascota: " + (int)((1 - factorMascota) * 100) + "%"; 
+                            }
+                            JOptionPane.showMessageDialog(agregarServicio, mensaje);
+                        }
+                        boolean promocionado = veterinaria.verificarPromocionAutomatica(rutDueno);
+                        if (promocionado) {
+                            Cliente clientePromovido = veterinaria.buscarClientePorRut(rutDueno);
+                            JOptionPane.showMessageDialog(agregarServicio, 
+                            "¡PROMOCION AUTOMATICA!\n\n" +
+                            clientePromovido.getNombre() + "ahora es CLIENTE FRECUENTE\n\n" +
+                            "Beneficios obtenidos:\n" +
+                            "Descuento automatco:" + (int)(clientePromovido.calcularDescuento() * 100) + "%\n" +
+                            clientePromovido.obtenerBeneficios() + "\n\n" +
+                            "¡Los próximos servicios tendrán descuento automático!",
+                            "Cliente Frecuente", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }
                 }
                 else{

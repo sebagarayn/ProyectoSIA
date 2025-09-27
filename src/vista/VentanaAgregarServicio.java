@@ -17,8 +17,29 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
         comboEstado.removeAllItems();
         comboEstado.addItem("Pendiente");
         comboEstado.addItem("Realizado");
+        
+        comboNivelUrgencia.removeAllItems();
+        comboNivelUrgencia.addItem("1");
+        comboNivelUrgencia.addItem("2");
+        comboNivelUrgencia.addItem("3");
+        comboNivelUrgencia.addItem("4");
+        comboNivelUrgencia.addItem("5");
+        
         habilitarCamposServicio(false);
-        comboMascotas.setEnabled(false);
+        habilitarCamposUrgencia(false);
+        comboMascotas.setEnabled(false);  
+        
+        //Ojo aca, revisar esto
+        chkEsUrgencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkEsUrgenciaActionPerformed(evt);
+            }
+        });     
+    }
+    
+    //Este igual revisar despues
+    private void chkEsUrgenciaActionPerformed(java.awt.event.ActionEvent evt) {
+        habilitarCamposUrgencia(chkEsUrgencia.isSelected());
     }
     
     public void cargarMascotasDelCliente(Cliente cliente){
@@ -28,6 +49,7 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
                 comboMascotas.addItem(mascota.getNombre());
             }
             habilitarCamposServicio(true);
+            habilitarCamposUrgencia(chkEsUrgencia.isSelected());
         }
         else{
             habilitarCamposServicio(false);
@@ -51,7 +73,14 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
         txtDescripcion.setEnabled(habilitar);
         txtPrecio.setEnabled(habilitar);
         comboEstado.setEnabled(habilitar);
+        chkEsUrgencia.setEnabled(habilitar);
         btnAgregar.setEnabled(habilitar);
+    }
+    
+    public void habilitarCamposUrgencia(boolean habilitar){
+        comboNivelUrgencia.setEnabled(habilitar);
+        txtMotivoUrgencia.setEnabled(habilitar);
+        chkAtencionInmediata.setEnabled(habilitar);
     }
     
     public void limpiarCamposServicio(){
@@ -62,6 +91,9 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
         txtDescripcion.setText("");
         txtPrecio.setText("");
         comboEstado.setSelectedIndex(0); //Se vuelve a "Pendiente"
+        comboNivelUrgencia.setSelectedIndex(0);
+        chkAtencionInmediata.setSelected(false);
+        habilitarCamposUrgencia(false);
     }
     
     public javax.swing.JTextField getTxtRutDueno() {return txtRutDueno;}
@@ -74,7 +106,12 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
     public JComboBox<String> getComboEstado() {return comboEstado;}  
     public javax.swing.JButton getBtnBuscar() {return btnBuscar;}
     public javax.swing.JButton getBtnAgregar() {return btnAgregar;}
-    public javax.swing.JButton getBtnCancelar() {return btnCancelar;}    
+    public javax.swing.JButton getBtnCancelar() {return btnCancelar;}   
+    public JCheckBox getChkEsUrgencia() {return chkEsUrgencia;}
+    public JComboBox<String> getComboNivelUrgencia() {return comboNivelUrgencia;}
+    public JTextField getTxtMotivoUrgencia() {return txtMotivoUrgencia;}
+    public JCheckBox getChkAtencionInmediata() {return chkAtencionInmediata;}
+    
 
 //=========================  CODIGO AUTOMATICO  ================================
     
@@ -101,6 +138,10 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
         btnBuscar = new javax.swing.JButton();
         comboEstado = new javax.swing.JComboBox<>();
         comboMascotas = new javax.swing.JComboBox<>();
+        comboNivelUrgencia = new javax.swing.JComboBox<>();
+        chkEsUrgencia = new javax.swing.JCheckBox();
+        txtMotivoUrgencia = new javax.swing.JTextField();
+        chkAtencionInmediata = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -152,59 +193,80 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
             }
         });
 
+        comboNivelUrgencia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        chkEsUrgencia.setText("Es Urgencia");
+
+        txtMotivoUrgencia.setText("Motivo Urgencia");
+
+        chkAtencionInmediata.setText("Atencion Inmediata");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel7)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(comboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnAgregar))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtTipoServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel8)
-                                .addGap(12, 12, 12)
-                                .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(comboMascotas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAgregar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancelar)
-                        .addGap(32, 32, 32))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(18, 18, 18)
-                                .addComponent(comboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                                .addComponent(btnCancelar)
+                                .addGap(53, 53, 53)))
                         .addGap(18, 18, 18)
-                        .addComponent(txtRutDueno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnBuscar)
-                        .addGap(29, 29, 29))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtMotivoUrgencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(chkAtencionInmediata))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(chkEsUrgencia)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(comboNivelUrgencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtRutDueno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnBuscar)
+                                .addGap(29, 29, 29))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(comboMascotas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel5)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtTipoServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel4)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel8)
+                                        .addGap(12, 12, 12)
+                                        .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -234,15 +296,26 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(comboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(comboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(chkEsUrgencia)
+                            .addComponent(comboNivelUrgencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
-                    .addComponent(btnCancelar))
-                .addGap(33, 33, 33))
+                    .addComponent(txtMotivoUrgencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkAtencionInmediata))
+                .addGap(5, 5, 5)
+                .addComponent(btnCancelar)
+                .addContainerGap())
         );
 
         pack();
@@ -260,8 +333,11 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JCheckBox chkAtencionInmediata;
+    private javax.swing.JCheckBox chkEsUrgencia;
     private javax.swing.JComboBox<String> comboEstado;
     private javax.swing.JComboBox<String> comboMascotas;
+    private javax.swing.JComboBox<String> comboNivelUrgencia;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -273,6 +349,7 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
     private javax.swing.JTextField txtDescripcion;
     private javax.swing.JTextField txtFecha;
     private javax.swing.JTextField txtHora;
+    private javax.swing.JTextField txtMotivoUrgencia;
     private javax.swing.JTextField txtPrecio;
     private javax.swing.JTextField txtRutDueno;
     private javax.swing.JTextField txtTipoServicio;

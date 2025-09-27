@@ -16,7 +16,7 @@ public class ServicioUrgencia extends Servicio{
     
     @Override
     public String obtenerTipoServicio(){
-        return "URGENCIA - " + tipoServicio + " (Nivel " + nivelUrgencia + ")";
+        return "URGENCIA - " + getTipoServicio() + " (Nivel " + nivelUrgencia + ")";
     }
     
     @Override
@@ -29,7 +29,7 @@ public class ServicioUrgencia extends Servicio{
             case 2: recargo = 1.30; break;
             default: recargo = 1.15; break;
         }
-        return (int)(precio*recargo);
+        return (int)(getPrecio()*recargo);
     }
     
     @Override

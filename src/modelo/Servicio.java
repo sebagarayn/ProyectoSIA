@@ -2,12 +2,12 @@
 package modelo;
 
 public class Servicio {
-    protected String tipoServicio;
-    protected String fecha;
-    protected String hora;
-    protected String descripcion;
-    protected int precio;
-    protected String estado;
+    private String tipoServicio;
+    private String fecha;
+    private String hora;
+    private String descripcion;
+    private int precio;
+    private String estado;
 
 //============================ CONSTRUCTORES ===================================
     public Servicio(){

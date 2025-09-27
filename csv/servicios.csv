@@ -1,6 +1,9 @@
-20911143-8,Ahri,Baño,25-09-2025,12:00,Baño,10800,Pendiente
-20911143-8,Ahri,jTextField3,jTextField4,jTextField1,jTextField5,4500,Realizado
-20911143-8,Ahri,jTextField3,20-09-2025,jTextField1,jTextField5,4500,Pendiente
-20911143-8,Ahri,jTextField3,20-09-2025,jTextField1,jTextField5,2090,Pendiente
-20911143-8,Ahri,jTextField3,10-10-2020,jTextField1,jTextField5,9000,Pendiente
-20911143-8,Ahri,jTextField3,10-10-2020,jTextField1,jTextField5,13500,Pendiente
+20911143-8,Ahri,Baño,25-09-2025,12:00,Baño,10800,Pendiente,false,,,
+20911143-8,Ahri,jTextField3,jTextField4,jTextField1,jTextField5,4500,Realizado,false,,,
+20911143-8,Ahri,jTextField3,20-09-2025,jTextField1,jTextField5,4500,Pendiente,false,,,
+20911143-8,Ahri,jTextField3,20-09-2025,jTextField1,jTextField5,2090,Pendiente,false,,,
+20911143-8,Ahri,jTextField3,10-10-2020,jTextField1,jTextField5,13500,Pendiente,false,,,
+20911143-8,Ahri,jTextField3,10-10-2022,jTextField1,jTextField5,10800,Pendiente,false,,,
+20911143-8,Ahri,jTextField3,20-12-2020,jTextField1,jTextField5,10800,Pendiente,false,,,
+20911143-8,Ahri,jTextField3,20-10-2020,jTextField1,jTextField5,9767,Pendiente,true,1,Motivo Urgencia,false
+20911143-8,Ahri,jTextField3,jTextField4,jTextField1,jTextField5,1776,Pendiente,true,1,Motivo Urgencia,false
