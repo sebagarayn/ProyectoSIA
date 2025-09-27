@@ -7,15 +7,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.*;
 import proyectosia.*;
+import persistencia.GestorCSV;
 
 public class Veterinaria {
     private ArrayList<Cliente> listaClientes; //Lista para almacenar clientes
     private HashMap<String, Cliente> mapaClientes; //Mapa para asociar rut con clientes, para buscar rapido
+    private GestorCSV gestorCSV; 
 
 //============================ CONSTRUCTORES ===================================    
     public Veterinaria(){
         this.listaClientes = new ArrayList<>();
         this.mapaClientes = new HashMap<>();
+        this.gestorCSV = new GestorCSV(); 
     }
     
 //=========================== GETTER Y SETTER ==================================
@@ -335,260 +338,24 @@ public class Veterinaria {
             }
         }
     }
-//=========================METODOS CSV =========================================
-//=========================GUARDADOS CSV========================================
-public void guardarClientesCSV(){
-        try(PrintWriter escritor = new PrintWriter(new FileWriter("csv/clientes.csv"))) {
-            for(Cliente cliente : listaClientes) {
-                String linea = cliente.getRut() + "," + 
-                        cliente.getNombre() + "," + 
-                        cliente.getTelefono() + "," + 
-                        cliente.getDireccion();
-                if (cliente instanceof ClienteFrecuente) {
-                    ClienteFrecuente cf = (ClienteFrecuente) cliente;
-                    linea += ",FRECUENTE," + cf.getNumeroVisitasAnuales() + "," + cf.getFechaUltimaVisita();
-                }
-                else{
-                    linea += ",REGULAR,,";
-                }
-                escritor.println(linea);
-            }
-        } catch (IOException e) {
-            System.out.println("Error al guardar clientes: " + e.getMessage());
-        }
+//===============================  METODOS CSV  ================================
+
+    /*Carga de los datos csv*/
+    public void cargarDatos(){
+        gestorCSV.cargarDatos(this);
     }
     
-    public void guardarMascotasCSV() {
-        try {PrintWriter escritor = new PrintWriter(new FileWriter("csv/mascotas.csv"));
-            escritor.println("rut_dueno,nombre,tipo,raza,edad,es_geriatrica,fecha_inicio_geriatria");
-            for(Cliente cliente : listaClientes){
-                for(Mascota mascota : cliente.getMascotas()){
-                    String esGeriatrica = "false";
-                    String fechaInicio = "";
-
-                    if(mascota instanceof MascotaGeriatrica){
-                        esGeriatrica = "true";
-                        fechaInicio = ((MascotaGeriatrica) mascota).getFechaInicioGeriatria();
-                    }
-                    String linea = cliente.getRut() + "," + 
-                                  mascota.getNombre() + "," + 
-                                  mascota.getTipo() + "," + 
-                                  mascota.getRaza() + "," + 
-                                  mascota.getEdad() + "," +
-                                  esGeriatrica + "," +
-                                  fechaInicio;
-                    escritor.println(linea);
-                }
-            }
-            escritor.close();
-        } catch (IOException e){
-            System.out.println("Error al guardar mascotas: " + e.getMessage());
-        }
+    /*Guardar los datos en csv*/
+    public void guardarDatos(){
+        gestorCSV.guardarDatos(this);
     }
     
-    /*public void guardarServiciosCSV() {
-        try(PrintWriter escritor = new PrintWriter(new FileWriter("csv/servicios.csv"))){ //Para escribir en el archivo en la carpeta csv
-            for(Cliente cliente : listaClientes){ //Sobre la lista de los clientes
-                for(Mascota mascota : cliente.getMascotas()){ //Sobre la lista las mascotas de los clientes
-                    for(Servicio servicio : mascota.getServicios()){ //Sobre la lista de los servicios de las mascotas de los clientes
-                        escritor.println(
-                                cliente.getRut() + "," + 
-                                mascota.getNombre() + "," + 
-                                servicio.getTipoServicio() + "," + 
-                                servicio.getFecha() + "," + 
-                                servicio.getHora() + "," +
-                                servicio.getDescripcion() + "," + 
-                                servicio.getPrecio() + "," + 
-                                servicio.getEstado());
-                    }
-                }
-            }
-        } catch (IOException e){ //En caso de haber un error en entrada o salida, muestra un mensaje de error
-            System.out.println("Error al guardar servicios: " + e.getMessage());
-        }
-    }*/
-    
-    public void guardarServiciosCSV() {
-        try(PrintWriter escritor = new PrintWriter(new FileWriter("csv/servicios.csv"))){ //Para escribir en el archivo en la carpeta csv
-            for(Cliente cliente : listaClientes){ //Sobre la lista de los clientes
-                for(Mascota mascota : cliente.getMascotas()){ //Sobre la lista las mascotas de los clientes
-                    for(Servicio servicio : mascota.getServicios()){ //Sobre la lista de los servicios de las mascotas de los clientes
-                        String linea =
-                                cliente.getRut() + "," + 
-                                mascota.getNombre() + "," + 
-                                servicio.getTipoServicio() + "," + 
-                                servicio.getFecha() + "," + 
-                                servicio.getHora() + "," +
-                                servicio.getDescripcion() + "," + 
-                                servicio.getPrecio() + "," + 
-                                servicio.getEstado();
-                        if (servicio instanceof ServicioUrgencia) {
-                            ServicioUrgencia urgencia = (ServicioUrgencia) servicio;
-                            linea += ",true," + 
-                                urgencia.getNivelUrgencia() + "," + 
-                                urgencia.getMotivoUrgencia() + "," + 
-                                urgencia.isRequiereAtencionInmediata();
-                        }
-                        else{
-                            linea += ",false,,,";
-                        }
-                        escritor.println(linea);
-                    }
-                }
-            }
-        } catch (IOException e){ //En caso de haber un error en entrada o salida, muestra un mensaje de error
-            System.out.println("Error al guardar servicios: " + e.getMessage());
-        }
-    }  
-    
-//============================CARGAS CSV========================================
-    public void cargarClientesCSV() {
-        try(BufferedReader lector = new BufferedReader(new FileReader("csv/clientes.csv"))) {
-            String linea;
-            while((linea = lector.readLine()) != null) {
-                String[] partes = linea.split(",");
-                if(partes.length >= 4) {
-                    String rut = partes[0];
-                    String nombre = partes[1];
-                    String telefono = partes[2];
-                    String direccion = partes[3];       
-                    if (partes.length >= 7 && "FRECUENTE".equals(partes[4])) {
-                        try {
-                            int visitas = Integer.parseInt(partes[5]);
-                            String fechaUltima = partes[6];
-                            ClienteFrecuente clienteFrecuente = new ClienteFrecuente(
-                                nombre, rut, telefono, direccion, visitas, fechaUltima);
-                            listaClientes.add(clienteFrecuente);
-                            mapaClientes.put(rut, clienteFrecuente);
-                        } catch (NumberFormatException e) {
-                            Cliente cliente = new Cliente(nombre, rut, telefono, direccion);
-                            listaClientes.add(cliente);
-                            mapaClientes.put(rut, cliente);
-                        }
-                    } else {
-                        Cliente cliente = new Cliente(nombre, rut, telefono, direccion);
-                        listaClientes.add(cliente);
-                        mapaClientes.put(rut, cliente);
-                    }
-                }              
-            }
-            verificarPromocionesPendientes();
-        } catch (IOException e) {
-            System.out.println("No hay datos de clientes o error en lectura de CSV de clientes. " + e.getMessage());
-        }
-    }
-    
-    public void cargarMascotasCSV() {
-        try(BufferedReader lector = new BufferedReader(new FileReader("csv/mascotas.csv"))){
-            String linea;
-            boolean primeraLinea = true;      
-        
-            while((linea = lector.readLine()) != null) {
-                if(primeraLinea) {
-                primeraLinea = false;
-                    continue;
-                }
-            
-                String[] partes = linea.split(",");         
-                if(partes.length >= 5){
-                    String rutDueno = partes[0];               
-                    Cliente dueno = buscarClientePorRut(rutDueno);
-
-                    if(dueno != null){
-                        String nombre = partes[1];
-                        String tipo = partes[2];
-                        String raza = partes[3];
-                        int edad = Integer.parseInt(partes[4]);
-
-                        if(partes.length >= 7 && "true".equals(partes[5])) {
-                            String fechaInicio = partes[6];
-                            MascotaGeriatrica mascota = new MascotaGeriatrica(nombre, tipo, raza, edad, fechaInicio);
-                            dueno.agregarMascota(mascota);
-                        }
-                        else{
-                            dueno.agregarMascota(new Mascota(nombre, tipo, raza, edad));
-                        }
-                    }
-                }
-            }
-        } catch (Exception e){
-            System.out.println("Error al cargar mascotas: " + e.getMessage());
-        }
+    /*Verificar si existen datos csv*/
+    public boolean existenDatos(){
+        return gestorCSV.existenDatos();
     }
 
-    
-    /*public void cargarServiciosCSV() {
-        try(BufferedReader lector = new BufferedReader(new FileReader("csv/servicios.csv"))){ //Para leer el archivo en la carpeta csv
-            String linea; //Para almacenar cada linea del archivo leido
-            while((linea = lector.readLine()) != null) { //Mientras la linea leida no sea null, es decir, exista
-                String[] partes = linea.split(","); //Aca se divide cada linea del csv que esta separada por ,
-                if(partes.length == 8){ //Para asegurar que la cantidad de partes (atributos) sea correcta
-                    String rutDueno = partes[0]; //rut del dueno
-                    String nombreMascota = partes[1]; //nombre de la mascota
-                    Cliente dueno = buscarClientePorRut(rutDueno); //Se busca al cliente
-                    if(dueno != null){ //En caso de existir se busca la mascota en el cliente por su nombre
-                        Mascota mascota = dueno.buscarMascotaPorNombre(nombreMascota);
-                        if(mascota != null){ //En caso de existirse agrega el servicio a la masctoa
-                            mascota.agregarServicio(new Servicio(
-                                    partes[2], //tipoServicio
-                                    partes[3], //fecha
-                                    partes[4], //Hora
-                                    partes[5], //descripcion
-                                    Integer.parseInt(partes[6]), //precio
-                                    partes[7])); //estado
-                        }
-                    }
-                }
-            }
-        } catch (IOException e){ //En caso de haber un error al leer el archivo, muestra un mensaje de error
-            System.out.println("No hay datos de servicios o error en lectura de CSV de servicios. " + e.getMessage());
-        }
-    }*/
-    
-    public void cargarServiciosCSV() {
-        try(BufferedReader lector = new BufferedReader(new FileReader("csv/servicios.csv"))){ //Para leer el archivo en la carpeta csv
-            String linea; //Para almacenar cada linea del archivo leido
-            while((linea = lector.readLine()) != null) { //Mientras la linea leida no sea null, es decir, exista
-                String[] partes = linea.split(","); //Aca se divide cada linea del csv que esta separada por ,
-                if(partes.length >= 8){ //Para asegurar que la cantidad de partes (atributos) sea correcta
-                    String rutDueno = partes[0]; //rut del dueno
-                    String nombreMascota = partes[1]; //nombre de la mascota
-                    Cliente dueno = buscarClientePorRut(rutDueno); //Se busca al cliente
-                    if(dueno != null){ //En caso de existir se busca la mascota en el cliente por su nombre
-                        Mascota mascota = dueno.buscarMascotaPorNombre(nombreMascota);
-                        if(mascota != null){ //En caso de existirse agrega el servicio a la masctoa
-                            String tipoServicio = partes[2];
-                            String fecha = partes[3];
-                            String hora = partes[4];
-                            String descripcion = partes[5];
-                            int precio = Integer.parseInt(partes[6]);
-                            String estado = partes[7];
-                            
-                            if(partes.length >= 12 && "true".equals(partes[8])) {
-                                try {
-                                    int nivelUrgencia = Integer.parseInt(partes[9]);
-                                    String motivoUrgencia = partes[10];
-                                    boolean requiereInmediata = Boolean.parseBoolean(partes[11]);
-                                    ServicioUrgencia servicioUrgencia = new ServicioUrgencia(
-                                            tipoServicio, fecha, hora, descripcion, precio, estado,
-                                            nivelUrgencia, motivoUrgencia, requiereInmediata);
-                                    mascota.agregarServicio(servicioUrgencia);
-                                } catch (NumberFormatException e) {
-                                    mascota.agregarServicio(new Servicio(tipoServicio, fecha, hora, descripcion, precio, estado));
-                                }
-                            }
-                            else{
-                                mascota.agregarServicio(new Servicio(tipoServicio, fecha, hora, descripcion, precio, estado));
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (IOException e){ //En caso de haber un error al leer el archivo, muestra un mensaje de error
-            System.out.println("No hay datos de servicios o error en lectura de CSV de servicios. " + e.getMessage());
-        }
-    }
-    
+//==============================================================================
     public String obtenerInformacionCompleta(String rut){
         Cliente cliente = buscarClientePorRut(rut);
         if(cliente != null){

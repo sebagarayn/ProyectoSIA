@@ -10,9 +10,11 @@ import vista.*;
 import java.util.List;
 import java.util.ArrayList;
 import util.ReporteManager;
+import persistencia.GestorCSV;
 
 public class ControladorVeterinaria implements ActionListener {
     private Veterinaria veterinaria;
+    private GestorCSV gestorCSV;
     private VentanaMain main;
     
     //CLIENTES
@@ -42,13 +44,10 @@ public class ControladorVeterinaria implements ActionListener {
     
     public void iniciar() {
         veterinaria = new Veterinaria(); //Iniciar veterinaria
+        gestorCSV = new GestorCSV(); //Inicio del gestor de datos
         
-        //CARGAR DATOS
-        veterinaria.cargarClientesCSV(); //Cargar los datos de los clientes del csv
-        veterinaria.cargarMascotasCSV(); //Cargar los datos de las mascotas del csv
-        veterinaria.cargarServiciosCSV(); //Cargar los datos de los servicios del csv
-        
-        veterinaria.verificarPromocionesPendientes();
+        gestorCSV.cargarDatos(veterinaria); //Se cargan los clientes, mascotas y servicios
+        veterinaria.verificarPromocionesPendientes(); //Se actualizan los estados
         
         main = new VentanaMain();
         
@@ -1035,10 +1034,8 @@ public class ControladorVeterinaria implements ActionListener {
         
         //SALIR        
         if (ae.getSource() == main.getjMenuItemSalir()) {
-            veterinaria.guardarClientesCSV();
-            veterinaria.guardarMascotasCSV();
-            veterinaria.guardarServiciosCSV();
-            System.exit(0);
+            gestorCSV.guardarDatos(veterinaria); //Se guardan los clientes, mascotas y servicios
+            System.exit(0); //Se cierra la aplicación
             return;
         }     
     }  
