@@ -53,7 +53,10 @@ public class VentanaMain extends javax.swing.JFrame {
     }  
     public javax.swing.JMenuItem getjMenuItemListarClientesFrecuentes() { //Submenu->Listar ClientesFrecuentes
         return jMenuItemListarClientesFrecuentes;
-    }  
+    } 
+    public javax.swing.JMenuItem getJMenuItemGenerarReporte() { //Para el reporte txt y html
+        return jMenuItemGenerarReporte;
+    }
          
     //MENU SALIR
     public javax.swing.JMenuItem getjMenuItemSalir() { //Submenu->Salir del Programa
@@ -87,6 +90,7 @@ public class VentanaMain extends javax.swing.JFrame {
         jMenuItemListarMascotas = new javax.swing.JMenuItem();
         jMenuItemListarServicios = new javax.swing.JMenuItem();
         jMenuItemListarClientesFrecuentes = new javax.swing.JMenuItem();
+        jMenuItemGenerarReporte = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItemSalir = new javax.swing.JMenuItem();
 
@@ -155,6 +159,9 @@ public class VentanaMain extends javax.swing.JFrame {
         jMenuItemListarClientesFrecuentes.setText("Listar Clientes Frecuentes");
         jMenu5.add(jMenuItemListarClientesFrecuentes);
 
+        jMenuItemGenerarReporte.setText("Generar Reporte");
+        jMenu5.add(jMenuItemGenerarReporte);
+
         jMenuBar1.add(jMenu5);
 
         jMenu4.setText("Salir");
@@ -199,6 +206,7 @@ public class VentanaMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemEliminarCliente;
     private javax.swing.JMenuItem jMenuItemEliminarMascota;
     private javax.swing.JMenuItem jMenuItemEliminarServicio;
+    private javax.swing.JMenuItem jMenuItemGenerarReporte;
     private javax.swing.JMenuItem jMenuItemListarClientes;
     private javax.swing.JMenuItem jMenuItemListarClientesFrecuentes;
     private javax.swing.JMenuItem jMenuItemListarMascotas;

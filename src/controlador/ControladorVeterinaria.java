@@ -9,6 +9,7 @@ import modelo.*;
 import vista.*;
 import java.util.List;
 import java.util.ArrayList;
+import util.ReporteManager;
 
 public class ControladorVeterinaria implements ActionListener {
     private Veterinaria veterinaria;
@@ -73,6 +74,7 @@ public class ControladorVeterinaria implements ActionListener {
         main.getjMenuItemListarMascotas().addActionListener(this);
         main.getjMenuItemListarServicios().addActionListener(this);
         main.getjMenuItemListarClientesFrecuentes().addActionListener(this);
+        main.getJMenuItemGenerarReporte().addActionListener(this);
         
         //SALIR
         main.getjMenuItemSalir().addActionListener(this);
@@ -1005,6 +1007,19 @@ public class ControladorVeterinaria implements ActionListener {
         if(listarClientesFrecuentes != null && ae.getSource() == listarClientesFrecuentes.getBtnCerrar()){
             listarClientesFrecuentes.dispose();
             return;
+        }
+        
+        if(ae.getSource() == main.getJMenuItemGenerarReporte()){ //Reporte txt y html
+            String nombrePersonalizado = JOptionPane.showInputDialog(main, "Ingrese el nombre para el reporte:", "Nombre del Reporte", JOptionPane.QUESTION_MESSAGE);
+
+            if(nombrePersonalizado != null && !nombrePersonalizado.trim().isEmpty()){
+                ReporteManager reporte = new ReporteManager(veterinaria);
+                reporte.guardarReportePersonalizado(nombrePersonalizado.trim());
+                JOptionPane.showMessageDialog(main, "Reporte generado exitosamente\nRevisa la carpeta 'Reportes'", "Reporte Generado", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else{
+                JOptionPane.showMessageDialog(main, "Generación de reporte cancelada", "Cancelado", JOptionPane.WARNING_MESSAGE);
+            }
         }
 
 //===============================  MENU SALIR  =================================
