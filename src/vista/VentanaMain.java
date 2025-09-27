@@ -1,10 +1,15 @@
 //Rev.24-09
 package vista;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 public class VentanaMain extends javax.swing.JFrame {
 
     public VentanaMain() {
         initComponents();
+        configurarImagenFondo();
     }
     
     //MENU CLIENTES
@@ -65,6 +70,18 @@ public class VentanaMain extends javax.swing.JFrame {
     public javax.swing.JMenuItem getjMenuItemSalir() { //Submenu->Salir del Programa
         return jMenuItemSalir;
     }
+    
+    private void configurarImagenFondo(){
+        try{
+            ImageIcon imagenFondo = new ImageIcon(getClass().getResource("/imagenes/fondo_veterinaria.jpg"));
+            JLabel labelFondo = new JLabel(imagenFondo);
+            labelFondo.setSize(getSize());
+            getLayeredPane().add(labelFondo, Integer.valueOf(Integer.MIN_VALUE));
+            ((JPanel) getContentPane()).setOpaque(false);
+        } catch (Exception e) {
+            System.err.println("No se pudo cargar la imagen de fondo");
+        }
+    }
 
 //============================  CODIGO AUTOMATICO  =============================
     
@@ -100,7 +117,11 @@ public class VentanaMain extends javax.swing.JFrame {
         jMenuItemSalir = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Sistema de Veterinaria");
         setBackground(new java.awt.Color(0, 153, 153));
+        setMaximumSize(new java.awt.Dimension(1000, 700));
+        setMinimumSize(new java.awt.Dimension(1000, 700));
+        setPreferredSize(new java.awt.Dimension(1000, 700));
 
         jMenu1.setText("Clientes");
 
