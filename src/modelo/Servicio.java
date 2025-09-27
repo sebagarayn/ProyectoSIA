@@ -2,12 +2,12 @@
 package modelo;
 
 public class Servicio {
-    private String tipoServicio;
-    private String fecha;
-    private String hora;
-    private String descripcion;
-    private int precio;
-    private String estado;
+    protected String tipoServicio;
+    protected String fecha;
+    protected String hora;
+    protected String descripcion;
+    protected int precio;
+    protected String estado;
 
 //============================ CONSTRUCTORES ===================================
     public Servicio(){
@@ -35,4 +35,17 @@ public class Servicio {
     public void setPrecio(int precio) {this.precio = precio;}    
     public String getEstado() {return estado;}    
     public void setEstado(String estado) {this.estado = estado;}   
+    
+//==============================================================================
+    public String obtenerTipoServicio(){
+        return tipoServicio + " (Servicio Regular)";
+    }
+    
+    public int calcularPrecioFinal(){
+        return precio;
+    }
+    
+    public String obtenerInstruccionesEspeciales(){
+        return "Seguir protocolo estándar";
+    }
 }

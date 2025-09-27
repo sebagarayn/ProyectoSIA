@@ -36,6 +36,7 @@ public class ControladorVeterinaria implements ActionListener {
     private VentanaListarClientes listarClientes;
     private VentanaListarMascotas listarMascotas;
     private VentanaListarServicios listarServicios;
+    private VentanaListarClientesFrecuentes listarClientesFrecuentes;
     
     public void iniciar() {
         veterinaria = new Veterinaria(); //Iniciar veterinaria
@@ -44,6 +45,8 @@ public class ControladorVeterinaria implements ActionListener {
         veterinaria.cargarClientesCSV(); //Cargar los datos de los clientes del csv
         veterinaria.cargarMascotasCSV(); //Cargar los datos de las mascotas del csv
         veterinaria.cargarServiciosCSV(); //Cargar los datos de los servicios del csv
+        
+        veterinaria.verificarPromocionesPendientes();
         
         main = new VentanaMain();
         
@@ -69,6 +72,7 @@ public class ControladorVeterinaria implements ActionListener {
         main.getjMenuItemListarClientes().addActionListener(this);
         main.getjMenuItemListarMascotas().addActionListener(this);
         main.getjMenuItemListarServicios().addActionListener(this);
+        main.getjMenuItemListarClientesFrecuentes().addActionListener(this);
         
         //SALIR
         main.getjMenuItemSalir().addActionListener(this);
@@ -272,18 +276,54 @@ public class ControladorVeterinaria implements ActionListener {
             String nombre = agregarMascota.getjTextFieldNombre().getText();
             String tipo = agregarMascota.getjTextFieldTipo().getText();
             String raza = agregarMascota.getjTextFieldRaza().getText();
-            int edad = Integer.parseInt(agregarMascota.getjTextFieldEdad().getText());
+            String edadTexto = agregarMascota.getjTextFieldEdad().getText();
             
+            if (edadTexto.isEmpty()) {
+                JOptionPane.showMessageDialog(agregarMascota, "La edad no puede estar vacía");
+                return;
+            }
+            
+            int edad;
+            try {
+                edad = Integer.parseInt(edadTexto);
+                if (edad <= 0) {
+                    JOptionPane.showMessageDialog(agregarMascota, "La edad debe ser mayor a 0");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(agregarMascota, "La edad debe ser un número válido"); 
+                return;
+            }
+       
             Cliente dueno = veterinaria.buscarClientePorRut(rutDueno);
             if (dueno != null) {
-                dueno.agregarMascota(nombre, tipo, raza, edad);
-                JOptionPane.showMessageDialog(agregarMascota, "Mascota agregada exitosamente.");
+                int opcion = JOptionPane.showConfirmDialog(agregarMascota, "¿Es una mascota geriátrica (mayor o con cuidados especiales)?", "Tipo de Mascota", JOptionPane.YES_NO_OPTION);
+                if (opcion == JOptionPane.YES_OPTION) {
+                    String fechaInicio = JOptionPane.showInputDialog("Fecha inicio cuidados geriátricos (dd/mm/yyyy):");
+                    if (fechaInicio != null && !fechaInicio.trim().isEmpty()) {
+                        if (veterinaria.agregarMascotaGeriatrica(rutDueno, nombre, tipo, raza, edad, fechaInicio)) {
+                            JOptionPane.showMessageDialog(agregarMascota,
+                                "Mascota geriátrica agregada exitosamente.\n" +
+                                "Cuidados especiales: " + new MascotaGeriatrica(nombre, tipo, raza, edad, fechaInicio).obtenerCuidadosEspeciales());
+                        } else {
+                            JOptionPane.showMessageDialog(agregarMascota, "Error al agregar mascota geriátrica");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(agregarMascota, "La fecha de inicio es requerida para mascotas geriátricas");
+                        return;
+                    }
+                } else {
+                    // AGREGAR COMO MASCOTA NORMAL
+                    dueno.agregarMascota(nombre, tipo, raza, edad);
+                    JOptionPane.showMessageDialog(agregarMascota, "Mascota normal agregada exitosamente.");
+                }
             } else {
                 JOptionPane.showMessageDialog(agregarMascota, "Cliente no encontrado.");
             }
             agregarMascota.dispose();
             return;
         }
+                
         
         //AGREGAR MASCOTA - BOTÓN CANCELAR       
         if (agregarMascota != null && ae.getSource() == agregarMascota.getjButtonCancelar()) {
@@ -313,7 +353,21 @@ public class ControladorVeterinaria implements ActionListener {
                                  "Dueño:" + cliente.getNombre () + " (RUT:" + cliente.getRut() + ")" + "\n" +
                                  "Tipo: " + mascota.getTipo() + "\n" +
                                  "Raza: " + mascota.getRaza() + "\n" +
-                                 "Edad: " + mascota.getEdad();
+                                 "Edad: " + mascota.getEdad() + " años\n" +
+                                 "Categoría: ";
+                    if(mascota instanceof MascotaGeriatrica){
+                        MascotaGeriatrica geriatrica = (MascotaGeriatrica) mascota;
+                        info += "GERIÁTRICA\n";
+                        info += "Fecha inicio cuidados: " + geriatrica.getFechaInicioGeriatria() + "\n";
+                        info += "Cuidados especiales: " + geriatrica.obtenerCuidadosEspeciales() + "\n";
+                        info += "Frecuencia visitas: " + geriatrica.obtenerFrecuenciaVisitas() + " meses\n";
+                        info += "Medicamentos: " + geriatrica.getMedicamentosHabituales();
+                    }
+                    else{
+                        info += "Normal\n";
+                        info += "Cuidados: " + mascota.obtenerCuidadosEspeciales() + "\n";
+                        info += "Frecuencia visitas: " + mascota.obtenerFrecuenciaVisitas() + " meses";
+                    }
                     JOptionPane.showMessageDialog(buscarMascota, info);
                 } else {
                     JOptionPane.showMessageDialog(buscarMascota, "Mascota no encontrada.");
@@ -515,15 +569,48 @@ public class ControladorVeterinaria implements ActionListener {
             if(dueno != null){
                 Mascota mascota = dueno.buscarMascotaPorNombre(nombreMascota);
                 if(mascota != null){
-                    mascota.agregarServicio(tipoServicio, fecha, hora, descripcion, precio, estado);
-                    JOptionPane.showMessageDialog(agregarServicio, "Servicio agregado correctamente");
-                    agregarServicio.dispose();
-                }else{
-                    JOptionPane.showMessageDialog(agregarServicio, "Error: La mascota seleccionada no existe");
+                    
+                    int precioConDescuento = veterinaria.calcularPrecioConDescuento(rutDueno, precio);
+                    double factorMascota = mascota.calcularFactorPrecio();
+                    int precioFinal = (int)(precioConDescuento * factorMascota);
+                    
+                    mascota.agregarServicio(tipoServicio, fecha, hora, descripcion, precioFinal, estado);
+                    boolean promocionado = veterinaria.verificarPromocionAutomatica(rutDueno);
+                    String mensaje = "Servicio agregado correctamente";
+                    if(precioFinal < precio){
+                        mensaje += "\n\n=== DESCUENTOS APLICADOS ===";
+                        mensaje += "\nTipo Cliente: " + dueno.obtenerTipoCliente();
+                        mensaje += "\nPrecio Original: $" + precio;
+                        if(precioConDescuento < precio){
+                            mensaje += "\nDescuento cliente: $" + precioConDescuento + " (" + (int)(dueno.calcularDescuento() * 100) + "%)";                                 
+                        }
+                        if (factorMascota < 1.0) {
+                           mensaje += "\nDescuento mascota: " + (int)((1 - factorMascota) * 100) + "%"; 
+                        }
+                        mensaje += "\nPrecio final: $" + precioFinal;
+                    }
+                    JOptionPane.showMessageDialog(agregarServicio, mensaje);
+                    
+                    if (promocionado) {
+                        Cliente clientePromovido = veterinaria.buscarClientePorRut(rutDueno);
+                        JOptionPane.showMessageDialog(agregarServicio, 
+                        "¡PROMOCION AUTOMATICA!\n\n" +
+                        clientePromovido.getNombre() + "ahora es CLIENTE FRECUENTE\n\n" +
+                        "Beneficios obtenidos:\n" +
+                        "Descuento automatco:" + (int)(clientePromovido.calcularDescuento() * 100) + "%\n" +
+                        clientePromovido.obtenerBeneficios() + "\n\n" +
+                        "¡Los próximos servicios tendrán descuento automático!",
+                        "Cliente Frecuente", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
-            }else{
+                else{
+                    JOptionPane.showMessageDialog(agregarServicio, "Error: La mascota seleccionada no existe");                  
+                }
+            }
+            else{
                 JOptionPane.showMessageDialog(agregarServicio, "Error: El cliente no existe");
             }
+            agregarServicio.dispose();
             return;
         }
         
@@ -800,9 +887,26 @@ public class ControladorVeterinaria implements ActionListener {
             if(confirmacion == JOptionPane.YES_OPTION){
                 if(veterinaria.eliminarServicio(rutCliente, nombreMascota, indiceSeleccionado)){
                     JOptionPane.showMessageDialog(eliminarServicio, "Servicio eliminado exitosamente");
+                    
+                    Cliente cliente = veterinaria.buscarClientePorRut(rutCliente);
+                    if(cliente != null){
+                        int serviciosRestantes = 0;
+                        for(Mascota mascota : cliente.getMascotas()){
+                            serviciosRestantes += mascota.getServicios().size();
+                        }
+                        if(cliente instanceof ClienteFrecuente && serviciosRestantes < 7){
+                            veterinaria.revertirAClienteRegular(rutCliente);
+                            JOptionPane.showMessageDialog(eliminarServicio, "Advertencia: Cliente frecuente ahora tiene solo" + serviciosRestantes + "servicios");
+                        }
+                    }
+                    
                     List<Servicio> serviciosActualizados = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
                     eliminarServicio.cargarServiciosDeMascota(serviciosActualizados);
                     eliminarServicio.limpiarCampos();
+                    
+                    if(listarClientesFrecuentes != null && listarClientesFrecuentes.isVisible()){
+                        listarClientesFrecuentes.cargarDatos();
+                    }
                 }
                 else{
                     JOptionPane.showMessageDialog(eliminarServicio, "Errora al eliminar el servicio");
@@ -839,6 +943,27 @@ public class ControladorVeterinaria implements ActionListener {
             listarServicios.setVisible(true);
             return;
         }
+        
+        //LISTAR CLIENTES FRECUENTES
+        if(ae.getSource() == main.getjMenuItemListarClientesFrecuentes()){
+            listarClientesFrecuentes = new VentanaListarClientesFrecuentes(veterinaria);
+            listarClientesFrecuentes.getBtnActualizar().addActionListener(this);
+            listarClientesFrecuentes.getBtnCerrar().addActionListener(this);
+            listarClientesFrecuentes.setVisible(true);
+            return;
+        }
+        
+        if(listarClientesFrecuentes != null && ae.getSource() == listarClientesFrecuentes.getBtnActualizar()){
+            veterinaria.verificarPromocionesPendientes();
+            listarClientesFrecuentes.cargarDatos();
+            int cantidadClientes = veterinaria.obtenerClientesFrecuentes().size();
+            JOptionPane.showMessageDialog(listarClientesFrecuentes, "Lista actualizada\n" + "Clientes frecuentes: " + cantidadClientes);            
+        }
+        
+        if(listarClientesFrecuentes != null && ae.getSource() == listarClientesFrecuentes.getBtnCerrar()){
+            listarClientesFrecuentes.dispose();
+            return;
+        }
 
 //===============================  MENU SALIR  =================================
         
@@ -849,7 +974,7 @@ public class ControladorVeterinaria implements ActionListener {
             veterinaria.guardarServiciosCSV();
             System.exit(0);
             return;
-        }
+        }     
     }  
 
 //=======================  METODOS AUXILIARES  =================================

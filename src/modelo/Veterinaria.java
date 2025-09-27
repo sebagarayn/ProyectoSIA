@@ -74,6 +74,131 @@ public class Veterinaria {
         }
         return false;
     }
+
+//=========================  CLIENTES FRECUENTES  ==============================
+    
+    //Para verificar promoción automatica, 7 servicios ahora.
+    public boolean verificarPromocionAutomatica(String rut) {
+        Cliente cliente = buscarClientePorRut(rut);
+        if (cliente != null && !(cliente instanceof ClienteFrecuente)) {
+            int totalServicios = contarTotalServicios(cliente);
+            if (totalServicios >= 7) {
+                String fechaActual = obtenerFechaActual();
+                boolean promovido = promoverAClienteFrecuente(rut, totalServicios, fechaActual);
+                return promovido;
+            }
+        }
+        return false;
+    }
+    
+    //Para promover a cliente regular a frecuente
+    public boolean promoverAClienteFrecuente(String rut, int numeroVisitasAnuales, String fechaUltimaVisita){
+        Cliente cliente = buscarClientePorRut(rut);
+        if (cliente != null && !(cliente instanceof ClienteFrecuente)) { //Guardar los datos del cliente original
+            String nombre = cliente.getNombre();
+            String telefono = cliente.getTelefono();
+            String direccion = cliente.getDireccion();
+            ArrayList<Mascota> mascotasOriginales = new ArrayList<>(cliente.getMascotas());
+            listaClientes.remove(cliente); //Remover a cliente regular
+            mapaClientes.remove(rut); 
+            ClienteFrecuente clienteFrecuente = new ClienteFrecuente(nombre, rut, telefono, direccion, numeroVisitasAnuales, fechaUltimaVisita); //Para crear cliente frecuente
+            for (Mascota mascota : mascotasOriginales) { //Transferir las mascotas
+                clienteFrecuente.agregarMascota(mascota);
+            }
+            listaClientes.add(clienteFrecuente); //Agregar nuevo cliente frecuente
+            mapaClientes.put(rut, clienteFrecuente);
+            return true;
+        }
+        return false;
+    }
+    
+    //Calcular precio con descuento automatico
+    public int calcularPrecioConDescuento(String rutCliente, int precioOriginal) {
+        Cliente cliente = buscarClientePorRut(rutCliente);
+        if (cliente != null) {
+            double descuento = cliente.calcularDescuento(); // Polimorfismo
+            return (int)(precioOriginal * (1 - descuento));
+        }
+        return precioOriginal;
+    }
+    
+    //Metodo para contar servicios totales
+    private int contarTotalServicios(Cliente cliente) {
+        int total = 0;
+        for (Mascota mascota : cliente.getMascotas()) {
+            total += mascota.getServicios().size();
+        }
+        return total;
+    }
+
+    //Obtener fecha actual
+    private String obtenerFechaActual(){
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        return hoy.getDayOfMonth() + "/" + hoy.getMonthValue() + "/" + hoy.getYear();
+    }
+    
+    //Obtener clientes frecuentes
+    public ArrayList<ClienteFrecuente> obtenerClientesFrecuentes() {
+        ArrayList<ClienteFrecuente> clientesFrecuentes = new ArrayList<>();
+        for (Cliente cliente : listaClientes) {
+            if (cliente instanceof ClienteFrecuente) {
+                clientesFrecuentes.add((ClienteFrecuente) cliente);
+            }
+        }
+        return clientesFrecuentes;
+    }
+    
+    public void verificarPromocionesPendientes(){
+        ArrayList<Cliente> clientesAPromover = new ArrayList<>();
+        ArrayList<Cliente> clientesARevertir = new ArrayList<>();
+        for (Cliente cliente : listaClientes) {
+            int totalServicios = contarTotalServicios(cliente);
+            if (!(cliente instanceof ClienteFrecuente)) {
+                if (totalServicios >= 7) {
+                    clientesAPromover.add(cliente);
+                }
+            }
+            else{
+                if (totalServicios < 7) {
+                    clientesARevertir.add(cliente);
+                }
+            }
+        }
+        for (Cliente cliente : clientesAPromover) {
+            String fechaActual = obtenerFechaActual();
+            int servicios = contarTotalServicios(cliente);
+            promoverAClienteFrecuente(cliente.getRut(), servicios, fechaActual);
+            System.out.println("Cliente " + cliente.getNombre() + " promovido automáticamente al cargar datos");
+        }
+        for (Cliente cliente : clientesARevertir) {
+            revertirAClienteRegular(cliente.getRut());
+            System.out.println("Cliente " + cliente.getNombre() + " revertido a regular");
+        }
+    }
+    
+    public boolean revertirAClienteRegular(String rut){
+        Cliente cliente = buscarClientePorRut(rut);
+        if (cliente instanceof ClienteFrecuente) {
+            String nombre = cliente.getNombre();
+            String telefono = cliente.getTelefono();
+            String direccion = cliente.getDireccion();
+            ArrayList<Mascota> mascotas = new ArrayList<>(cliente.getMascotas());
+            listaClientes.remove(cliente);
+            mapaClientes.remove(rut);
+            
+            Cliente clienteRegular = new Cliente(nombre, rut, telefono, direccion);
+            for (Mascota mascota : mascotas) {
+                clienteRegular.agregarMascota(mascota);
+            }
+            
+            listaClientes.add(clienteRegular);
+            mapaClientes.put(rut, clienteRegular);
+            return true;
+        }
+        return false;
+    }
+
+//=============================  METODOS MASCOTAS  =============================
     
     public boolean editarMascota(String rutCliente, String nombre, String tipo, String raza, int edad){
         Cliente cliente = buscarClientePorRut(rutCliente);
@@ -89,6 +214,42 @@ public class Veterinaria {
             return cliente.eliminarMascota(nombreMascota);
         }
         return false;
+    }
+    
+    //MASCOTAS - GERIATRICAS
+    
+    public boolean agregarMascotaGeriatrica(String rutDueno, String nombre, String tipo, String raza, int edad, String fechaInicioGeriatria){
+        Cliente dueno = buscarClientePorRut(rutDueno);
+        if(dueno != null){
+            MascotaGeriatrica mascotaGeriatrica = new MascotaGeriatrica(nombre, tipo, raza, edad, fechaInicioGeriatria);
+            dueno.agregarMascota(mascotaGeriatrica);
+            return true;
+        }
+        return false;
+    }
+    
+    public int obtenerCantidadMascotasGeriatricas(){
+        int contador = 0;
+        for(Cliente cliente : listaClientes){
+            for(Mascota mascota : cliente.getMascotas()){
+                if(mascota instanceof MascotaGeriatrica){
+                    contador ++;
+                }
+            }
+        }
+        return contador;
+    }
+    
+    public List<Mascota> obtenerMascotasGeriatricas(){
+        List<Mascota> geriatricas = new ArrayList<>();
+        for(Cliente cliente : listaClientes){
+            for(Mascota mascota : cliente.getMascotas()){
+                if(mascota instanceof MascotaGeriatrica){
+                    geriatricas.add(mascota);
+                }
+            }
+        }
+        return geriatricas;
     }
     
     //========================  METODOS PARA SERVICIOS =========================
@@ -141,7 +302,7 @@ public class Veterinaria {
     }
 //=========================METODOS CSV =========================================
 //=========================GUARDADOS CSV========================================
-    public void guardarClientesCSV() {
+/*    public void guardarClientesCSV() {
         try(PrintWriter escritor = new PrintWriter(new FileWriter("csv/clientes.csv"))){ //Para escribir en el archivo en la carpeta csv
             for(Cliente cliente : listaClientes){ //Sobre la lista de los clientes
                 escritor.println( //Se escriben los datos separador por coma en una linea
@@ -153,21 +314,53 @@ public class Veterinaria {
         } catch (IOException e){ //En caso de haber un error en entrada o salida, muestra un mensaje de error
             System.out.println("Error al guardar clientes: " + e.getMessage());
         }
+    }*/
+    
+    public void guardarClientesCSV(){
+        try(PrintWriter escritor = new PrintWriter(new FileWriter("csv/clientes.csv"))) {
+            for(Cliente cliente : listaClientes) {
+                String linea = cliente.getRut() + "," + 
+                        cliente.getNombre() + "," + 
+                        cliente.getTelefono() + "," + 
+                        cliente.getDireccion();
+                if (cliente instanceof ClienteFrecuente) {
+                    ClienteFrecuente cf = (ClienteFrecuente) cliente;
+                    linea += ",FRECUENTE," + cf.getNumeroVisitasAnuales() + "," + cf.getFechaUltimaVisita();
+                }
+                else{
+                    linea += ",REGULAR,,";
+                }
+                escritor.println(linea);
+            }
+        } catch (IOException e) {
+            System.out.println("Error al guardar clientes: " + e.getMessage());
+        }
     }
     
     public void guardarMascotasCSV() {
-        try(PrintWriter escritor = new PrintWriter(new FileWriter("csv/mascotas.csv"))){ //Para escribir en el archivo en la carpeta csv
-            for(Cliente cliente : listaClientes){ //Sobre la lista de los clientes
-                for(Mascota mascota : cliente.getMascotas()){ //Sobre la lista las mascotas de los clientes
-                    escritor.println( //Se escriben los datos separador por coma en una linea
-                            cliente.getRut() + "," + 
-                            mascota.getNombre() + "," + 
-                            mascota.getTipo() + "," + 
-                            mascota.getRaza() + "," + 
-                            mascota.getEdad());
+        try {PrintWriter escritor = new PrintWriter(new FileWriter("csv/mascotas.csv"));
+            escritor.println("rut_dueno,nombre,tipo,raza,edad,es_geriatrica,fecha_inicio_geriatria");
+            for(Cliente cliente : listaClientes){
+                for(Mascota mascota : cliente.getMascotas()){
+                    String esGeriatrica = "false";
+                    String fechaInicio = "";
+
+                    if(mascota instanceof MascotaGeriatrica){
+                        esGeriatrica = "true";
+                        fechaInicio = ((MascotaGeriatrica) mascota).getFechaInicioGeriatria();
+                    }
+                    String linea = cliente.getRut() + "," + 
+                                  mascota.getNombre() + "," + 
+                                  mascota.getTipo() + "," + 
+                                  mascota.getRaza() + "," + 
+                                  mascota.getEdad() + "," +
+                                  esGeriatrica + "," +
+                                  fechaInicio;
+                    escritor.println(linea);
                 }
             }
-        } catch (IOException e){ //En caso de haber un error en entrada o salida, muestra un mensaje de error
+            escritor.close();
+        } catch (IOException e){
             System.out.println("Error al guardar mascotas: " + e.getMessage());
         }
     }
@@ -195,7 +388,7 @@ public class Veterinaria {
     }
     
 //============================CARGAS CSV========================================
-    public void cargarClientesCSV() {
+/*    public void cargarClientesCSV() {
         try(BufferedReader lector = new BufferedReader(new FileReader("csv/clientes.csv"))){ //Para leer el archivo en la carpeta csv
             String linea; //Para almacenar cada linea del archivo leido
             while((linea = lector.readLine()) != null) { //Mientras la linea leida no sea null, es decir, exista
@@ -212,29 +405,82 @@ public class Veterinaria {
         } catch (IOException e){ //En caso de haber un error al leer el archivo, muestra un mensaje de error
             System.out.println("No hay datos de clientes o error en lectura de CSV de clientes. " + e.getMessage());
         }
+    }*/
+    
+    public void cargarClientesCSV() {
+        try(BufferedReader lector = new BufferedReader(new FileReader("csv/clientes.csv"))) {
+            String linea;
+            while((linea = lector.readLine()) != null) {
+                String[] partes = linea.split(",");
+                if(partes.length >= 4) {
+                    String rut = partes[0];
+                    String nombre = partes[1];
+                    String telefono = partes[2];
+                    String direccion = partes[3];       
+                    if (partes.length >= 7 && "FRECUENTE".equals(partes[4])) {
+                        try {
+                            int visitas = Integer.parseInt(partes[5]);
+                            String fechaUltima = partes[6];
+                            ClienteFrecuente clienteFrecuente = new ClienteFrecuente(
+                                nombre, rut, telefono, direccion, visitas, fechaUltima);
+                            listaClientes.add(clienteFrecuente);
+                            mapaClientes.put(rut, clienteFrecuente);
+                        } catch (NumberFormatException e) {
+                            Cliente cliente = new Cliente(nombre, rut, telefono, direccion);
+                            listaClientes.add(cliente);
+                            mapaClientes.put(rut, cliente);
+                        }
+                    } else {
+                        Cliente cliente = new Cliente(nombre, rut, telefono, direccion);
+                        listaClientes.add(cliente);
+                        mapaClientes.put(rut, cliente);
+                    }
+                }              
+            }
+            verificarPromocionesPendientes();
+        } catch (IOException e) {
+            System.out.println("No hay datos de clientes o error en lectura de CSV de clientes. " + e.getMessage());
+        }
     }
     
     public void cargarMascotasCSV() {
-        try(BufferedReader lector = new BufferedReader(new FileReader("csv/mascotas.csv"))){ //Para leer el archivo en la carpeta csv
-            String linea; //Para almacenar cada linea del archivo leido
-            while((linea = lector.readLine()) != null) { //Mientras la linea leida no sea null, es decir, exista
-                String[] partes = linea.split(","); //Aca se divide cada linea del csv que esta separada por ,
-                if(partes.length == 5){ //Para asegurar que la cantidad de partes (atributos) sea correcta
-                    String rutDueno = partes[0]; //rut del dueno
-                    Cliente dueno = buscarClientePorRut(rutDueno); //Se busca al cliente
-                    if(dueno != null){ //En caso de existir se agrega la mascota al cliente
-                        dueno.agregarMascota(new Mascota(
-                                partes[1], //nombre
-                                partes[2], //tipo
-                                partes[3], //raza
-                                Integer.parseInt(partes[4]))); //edad
+        try(BufferedReader lector = new BufferedReader(new FileReader("csv/mascotas.csv"))){
+            String linea;
+            boolean primeraLinea = true;      
+        
+            while((linea = lector.readLine()) != null) {
+                if(primeraLinea) {
+                primeraLinea = false;
+                    continue;
+                }
+            
+                String[] partes = linea.split(",");         
+                if(partes.length >= 5){
+                    String rutDueno = partes[0];               
+                    Cliente dueno = buscarClientePorRut(rutDueno);
+
+                    if(dueno != null){
+                        String nombre = partes[1];
+                        String tipo = partes[2];
+                        String raza = partes[3];
+                        int edad = Integer.parseInt(partes[4]);
+
+                        if(partes.length >= 7 && "true".equals(partes[5])) {
+                            String fechaInicio = partes[6];
+                            MascotaGeriatrica mascota = new MascotaGeriatrica(nombre, tipo, raza, edad, fechaInicio);
+                            dueno.agregarMascota(mascota);
+                        }
+                        else{
+                            dueno.agregarMascota(new Mascota(nombre, tipo, raza, edad));
+                        }
                     }
                 }
             }
-        } catch (IOException e){ //En caso de haber un error al leer el archivo, muestra un mensaje de error
-            System.out.println("No hay datos de mascotas o error en lectura de CSV de mascotas. " + e.getMessage());
+        } catch (Exception e){
+            System.out.println("Error al cargar mascotas: " + e.getMessage());
         }
     }
+
     
     public void cargarServiciosCSV() {
         try(BufferedReader lector = new BufferedReader(new FileReader("csv/servicios.csv"))){ //Para leer el archivo en la carpeta csv
@@ -263,4 +509,26 @@ public class Veterinaria {
             System.out.println("No hay datos de servicios o error en lectura de CSV de servicios. " + e.getMessage());
         }
     }
+    
+    public String obtenerInformacionCompleta(String rut){
+        Cliente cliente = buscarClientePorRut(rut);
+        if(cliente != null){
+            StringBuilder info = new StringBuilder();
+            info.append("INFORMACIÓN DEL CLIENTE\n");
+            info.append("Nombre: ").append(cliente.getNombre()).append("\n");
+            info.append("Tipo: ").append(cliente.obtenerTipoCliente()).append("\n"); // Método sobreescrito
+            info.append("Descuento: ").append((int)(cliente.calcularDescuento() * 100)).append("%\n"); // Método sobreescrito
+            info.append("Beneficios: ").append(cliente.obtenerBeneficios()).append("\n"); // Método sobreescrito
+            info.append("\n=== MASCOTAS ===\n");
+            for (Mascota mascota : cliente.getMascotas()) {
+                info.append("- ").append(mascota.getNombre()).append(" (").append(mascota.getTipo()).append(")\n");
+                info.append("  Cuidados: ").append(mascota.obtenerCuidadosEspeciales()).append("\n"); // Método sobreescrito
+                info.append("  Visitas cada: ").append(mascota.obtenerFrecuenciaVisitas()).append(" meses\n"); // Método sobreescrito
+                info.append("  Factor precio: ").append((int)(mascota.calcularFactorPrecio() * 100)).append("%\n"); // Método sobreescrito                
+            }
+            return info.toString();
+        }
+        return "Cliente no encontrado";
+    }
+    
 }

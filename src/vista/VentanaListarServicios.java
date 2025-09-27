@@ -1,10 +1,7 @@
 //Rev.24-09
 package vista;
 
-import modelo.Veterinaria;
-import modelo.Cliente;
-import modelo.Mascota;
-import modelo.Servicio;
+import modelo.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
@@ -25,6 +22,10 @@ public class VentanaListarServicios extends javax.swing.JFrame {
         List<Cliente> clientes = veterinaria.getClientes();
         for(Cliente cliente : clientes){
             for(Mascota mascota : cliente.getMascotas()){
+                String tipoMascota = "Normal";
+                if(mascota instanceof MascotaGeriatrica){
+                    tipoMascota = "Geriatrica";
+                }
                 for(Servicio servicio : mascota.getServicios()){
                     Object[] fila = {
                         servicio.getTipoServicio(),
@@ -34,7 +35,8 @@ public class VentanaListarServicios extends javax.swing.JFrame {
                         servicio.getPrecio(),
                         servicio.getEstado(),
                         mascota.getNombre(),
-                        cliente.getNombre() + " (" + cliente.getRut() + ")"
+                        cliente.getNombre() + " (" + cliente.getRut() + ")",
+                        tipoMascota    
                     };
                     modelo.addRow(fila);
                 }
@@ -49,6 +51,7 @@ public class VentanaListarServicios extends javax.swing.JFrame {
         tblServicios.getColumnModel().getColumn(5).setPreferredWidth(80);
         tblServicios.getColumnModel().getColumn(6).setPreferredWidth(100);
         tblServicios.getColumnModel().getColumn(7).setPreferredWidth(180);
+        tblServicios.getColumnModel().getColumn(8).setPreferredWidth(80);
 }
 
 //=============================AUTOMATICO===========================    
@@ -66,17 +69,17 @@ public class VentanaListarServicios extends javax.swing.JFrame {
 
         tblServicios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Tipo Servicio", "Fecha", "Hora", "Descripción", "Precio", "Estado", "Mascota", "Cliente"
+                "Tipo Servicio", "Fecha", "Hora", "Descripción", "Precio", "Estado", "Mascota", "Cliente", "Tipo Mascota"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true, true
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

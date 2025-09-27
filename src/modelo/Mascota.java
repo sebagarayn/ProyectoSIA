@@ -31,6 +31,23 @@ public class Mascota {
     public void setEdad(int edad) {this.edad = edad;}
     public ArrayList<Servicio> getServicios() {return servicios; }
     
+//=======================  METODOS SOBREESCRITURA  =============================
+    public String obtenerCuidadosEspeciales(){
+        return "Cuidados estándar según edad y tipo";
+    }
+    
+    public int obtenerFrecuenciaVisitas(){
+        return 6;
+    }
+    
+    public String obtenerRecomendaciones(){
+        return "Mantener vacunas al día y dieta balanceada";
+    }
+    
+    public double calcularFactorPrecio(){
+        return 1.0;
+    }
+    
 //================================ METODOS =====================================   
     public void agregarServicio(Servicio servicio) { //Para agregar un servicio a la mascota ya creado
         servicios.add(servicio); 

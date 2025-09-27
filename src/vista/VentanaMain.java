@@ -8,18 +8,10 @@ public class VentanaMain extends javax.swing.JFrame {
     }
     
     //MENU CLIENTES
-    public javax.swing.JMenuItem getjMenuItemAgregarCliente() { //Submenu->Agregar Cliente
-        return jMenuItemAgregarCliente;
-    }
-    public javax.swing.JMenuItem getjMenuItemBuscarCliente() { //Submenu->Buscar Cliente
-        return jMenuItemBuscarCliente;
-    }
-    public javax.swing.JMenuItem getjMenuItemEditarCliente() { //Submenu->Editar Cliente
-        return jMenuItemEditarCliente;
-    }   
-    public javax.swing.JMenuItem getjMenuItemEliminarCliente() { //Submenu->Eliminar Cliente
-        return jMenuItemEliminarCliente;
-    }      
+    public javax.swing.JMenuItem getjMenuItemAgregarCliente() {return jMenuItemAgregarCliente;} //Submenu->Agregar Cliente
+    public javax.swing.JMenuItem getjMenuItemBuscarCliente() {return jMenuItemBuscarCliente;} //Submenu->Buscar Cliente
+    public javax.swing.JMenuItem getjMenuItemEditarCliente() {return jMenuItemEditarCliente;} //Submenu->Editar Cliente   
+    public javax.swing.JMenuItem getjMenuItemEliminarCliente() {return jMenuItemEliminarCliente;} //Submenu->Eliminar Cliente     
     
     //MENU MASCOTAS
     public javax.swing.JMenuItem getjMenuItemAgregarMascota() { //Submenu->Agregar Mascota
@@ -45,7 +37,7 @@ public class VentanaMain extends javax.swing.JFrame {
     public javax.swing.JMenuItem getjMenuItemEditarServicio() { //Submenu->Editar Servicio
         return jMenuItemEditarServicio;
     }   
-    public javax.swing.JMenuItem getjMenuItemEliminarServicio() { //Submenu->Editar Servicio
+    public javax.swing.JMenuItem getjMenuItemEliminarServicio() { //Submenu->Eliminar Servicio
         return jMenuItemEliminarServicio;
     }      
     
@@ -58,8 +50,11 @@ public class VentanaMain extends javax.swing.JFrame {
     }    
     public javax.swing.JMenuItem getjMenuItemListarServicios() { //Submenu->Listar Servicios
         return jMenuItemListarServicios;
-    }     
-    
+    }  
+    public javax.swing.JMenuItem getjMenuItemListarClientesFrecuentes() { //Submenu->Listar ClientesFrecuentes
+        return jMenuItemListarClientesFrecuentes;
+    }  
+         
     //MENU SALIR
     public javax.swing.JMenuItem getjMenuItemSalir() { //Submenu->Salir del Programa
         return jMenuItemSalir;
@@ -91,10 +86,12 @@ public class VentanaMain extends javax.swing.JFrame {
         jMenuItemListarClientes = new javax.swing.JMenuItem();
         jMenuItemListarMascotas = new javax.swing.JMenuItem();
         jMenuItemListarServicios = new javax.swing.JMenuItem();
+        jMenuItemListarClientesFrecuentes = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItemSalir = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(0, 153, 153));
 
         jMenu1.setText("Clientes");
 
@@ -155,6 +152,9 @@ public class VentanaMain extends javax.swing.JFrame {
         jMenuItemListarServicios.setText("Listar Servicios");
         jMenu5.add(jMenuItemListarServicios);
 
+        jMenuItemListarClientesFrecuentes.setText("Listar Clientes Frecuentes");
+        jMenu5.add(jMenuItemListarClientesFrecuentes);
+
         jMenuBar1.add(jMenu5);
 
         jMenu4.setText("Salir");
@@ -174,7 +174,7 @@ public class VentanaMain extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 277, Short.MAX_VALUE)
+            .addGap(0, 278, Short.MAX_VALUE)
         );
 
         pack();
@@ -200,6 +200,7 @@ public class VentanaMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemEliminarMascota;
     private javax.swing.JMenuItem jMenuItemEliminarServicio;
     private javax.swing.JMenuItem jMenuItemListarClientes;
+    private javax.swing.JMenuItem jMenuItemListarClientesFrecuentes;
     private javax.swing.JMenuItem jMenuItemListarMascotas;
     private javax.swing.JMenuItem jMenuItemListarServicios;
     private javax.swing.JMenuItem jMenuItemSalir;

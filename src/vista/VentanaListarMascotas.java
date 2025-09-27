@@ -1,9 +1,7 @@
 //Rev.24-09
 package vista;
 
-import modelo.Veterinaria;
-import modelo.Cliente;
-import modelo.Mascota;
+import modelo.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
@@ -24,12 +22,17 @@ public class VentanaListarMascotas extends javax.swing.JFrame {
         List<Cliente> clientes = veterinaria.getClientes();
         for (Cliente cliente : clientes) {
             for (Mascota mascota : cliente.getMascotas()) {
+                String tipoMascota = "Normal";
+                if(mascota instanceof MascotaGeriatrica){
+                    tipoMascota = "Geriatrica";
+                }
                 Object[] fila = {
                     mascota.getNombre(),
                     mascota.getTipo(),
                     mascota.getRaza(),
                     mascota.getEdad(),
-                    cliente.getNombre() + " (" + cliente.getRut() + ")"
+                    cliente.getNombre() + " (" + cliente.getRut() + ")",
+                    tipoMascota
                 };
                 modelo.addRow(fila);
             }
@@ -41,6 +44,7 @@ public class VentanaListarMascotas extends javax.swing.JFrame {
         tblMascotas.getColumnModel().getColumn(2).setPreferredWidth(100);
         tblMascotas.getColumnModel().getColumn(3).setPreferredWidth(50);
         tblMascotas.getColumnModel().getColumn(4).setPreferredWidth(200);
+        tblMascotas.getColumnModel().getColumn(5).setPreferredWidth(80);
     }
 
 
@@ -59,17 +63,17 @@ public class VentanaListarMascotas extends javax.swing.JFrame {
 
         tblMascotas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Tipo", "Raza", "Edad", "Dueño"
+                "Nombre", "Tipo", "Raza", "Edad", "Dueño", "Tipo Mascota"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

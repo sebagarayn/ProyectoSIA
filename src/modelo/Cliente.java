@@ -9,7 +9,7 @@ public class Cliente {
     private String direccion;
     private ArrayList<Mascota> mascotas = new ArrayList<>(); //Para la lista de mascotas del cliente
     
-//============================ CONSTRUCTORES ===================================
+//==============================  CONSTRUCTORES  ==============================
     public Cliente(){      
     } 
     
@@ -20,7 +20,7 @@ public class Cliente {
         this.direccion = direccion;
     }
     
-//=========================== GETTER Y SETTER ==================================
+//=============================  GETTER Y SETTER  ==============================
     public String getNombre() {return nombre;}  
     public void setNombre(String nombre) {this.nombre = nombre;}    
     public String getRut() {return rut;}
@@ -31,7 +31,20 @@ public class Cliente {
     public void setDireccion(String direccion) {this.direccion = direccion;}   
     public ArrayList<Mascota> getMascotas() {return mascotas;}
     
-//================================ METODOS =====================================
+//=======================  METODOS SOBREESCRITURA  =============================
+    public String obtenerTipoCliente(){ //Obtener el tipo de cliente
+        return "Cliente Regular";
+    }
+    
+    public double calcularDescuento(){ //Obtener descuento
+        return 0.0; //Sin descuento por defecto para los clientes regulares
+    }
+    
+    public String obtenerBeneficios(){ //Obtener beneficios
+        return "Beneficios básicos: Atención estándar";
+    }
+    
+//=================================  METODOS  ==================================
     public void agregarMascota(Mascota mascota) { //Para agregar a la lista un objeto mascota ya creado
         mascotas.add(mascota); 
     }
