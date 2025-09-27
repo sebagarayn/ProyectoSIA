@@ -1,9 +1,12 @@
 //Rev.24-09
 package modelo;
+import exception.UmbralNegativoException;
+import exception.ListaClientesVaciaException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.*;
+import proyectosia.*;
 
 public class Veterinaria {
     private ArrayList<Cliente> listaClientes; //Lista para almacenar clientes
@@ -283,6 +286,40 @@ public class Veterinaria {
             }
         }
         return false;
+    }
+    
+    public List<Servicio> serviciosConCostoMayorA(int umbral) 
+        throws UmbralNegativoException, ListaClientesVaciaException {
+
+        if (umbral < 0) {
+            throw new UmbralNegativoException("El umbral no puede ser negativo.");
+        }
+        if (listaClientes.isEmpty()) {
+            throw new ListaClientesVaciaException("No hay clientes registrados.");
+        }
+
+        List<Servicio> resultado = new ArrayList<>();
+
+    // Recorrer clientes por Ã­ndice
+        for (int i = 0; i < listaClientes.size(); i++) {
+            Cliente c = listaClientes.get(i);
+
+        // Recorrer mascotas del cliente
+            for (int j = 0; j < c.getMascotas().size(); j++) {
+                Mascota m = c.getMascotas().get(j);
+
+            // Recorrer servicios de la mascota
+                for (int k = 0; k < m.getServicios().size(); k++) {
+                    Servicio s = m.getServicios().get(k);
+
+                    if (s.getPrecio() > umbral) {
+                        resultado.add(s);
+                    }
+                }
+            }
+        }
+
+        return resultado;
     }
     
 //==============================================================================

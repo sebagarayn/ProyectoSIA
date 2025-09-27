@@ -57,6 +57,9 @@ public class VentanaMain extends javax.swing.JFrame {
     public javax.swing.JMenuItem getJMenuItemGenerarReporte() { //Para el reporte txt y html
         return jMenuItemGenerarReporte;
     }
+    public javax.swing.JMenuItem getjMenuItemListarUmbral() {
+        return jMenuItemListarUmbral;
+    }
          
     //MENU SALIR
     public javax.swing.JMenuItem getjMenuItemSalir() { //Submenu->Salir del Programa
@@ -91,6 +94,8 @@ public class VentanaMain extends javax.swing.JFrame {
         jMenuItemListarServicios = new javax.swing.JMenuItem();
         jMenuItemListarClientesFrecuentes = new javax.swing.JMenuItem();
         jMenuItemGenerarReporte = new javax.swing.JMenuItem();
+        jMenu6 = new javax.swing.JMenu();
+        jMenuItemListarUmbral = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItemSalir = new javax.swing.JMenuItem();
 
@@ -164,6 +169,13 @@ public class VentanaMain extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu5);
 
+        jMenu6.setText("Extras");
+
+        jMenuItemListarUmbral.setText("Listar Umbral");
+        jMenu6.add(jMenuItemListarUmbral);
+
+        jMenuBar1.add(jMenu6);
+
         jMenu4.setText("Salir");
 
         jMenuItemSalir.setText("Salir del Progama");
@@ -193,6 +205,7 @@ public class VentanaMain extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItemAgregarCliente;
     private javax.swing.JMenuItem jMenuItemAgregarMascota;
@@ -211,6 +224,7 @@ public class VentanaMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemListarClientesFrecuentes;
     private javax.swing.JMenuItem jMenuItemListarMascotas;
     private javax.swing.JMenuItem jMenuItemListarServicios;
+    private javax.swing.JMenuItem jMenuItemListarUmbral;
     private javax.swing.JMenuItem jMenuItemSalir;
     // End of variables declaration//GEN-END:variables
 }

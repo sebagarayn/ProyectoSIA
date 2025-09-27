@@ -38,6 +38,7 @@ public class ControladorVeterinaria implements ActionListener {
     private VentanaListarMascotas listarMascotas;
     private VentanaListarServicios listarServicios;
     private VentanaListarClientesFrecuentes listarClientesFrecuentes;
+    private VentanaListarUmbral listarUmbral;
     
     public void iniciar() {
         veterinaria = new Veterinaria(); //Iniciar veterinaria
@@ -75,6 +76,7 @@ public class ControladorVeterinaria implements ActionListener {
         main.getjMenuItemListarServicios().addActionListener(this);
         main.getjMenuItemListarClientesFrecuentes().addActionListener(this);
         main.getJMenuItemGenerarReporte().addActionListener(this);
+        main.getjMenuItemListarUmbral().addActionListener(this);
         
         //SALIR
         main.getjMenuItemSalir().addActionListener(this);
@@ -1009,6 +1011,7 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
         
+        //REPORTES TXT
         if(ae.getSource() == main.getJMenuItemGenerarReporte()){ //Reporte txt y html
             String nombrePersonalizado = JOptionPane.showInputDialog(main, "Ingrese el nombre para el reporte:", "Nombre del Reporte", JOptionPane.QUESTION_MESSAGE);
 
@@ -1020,6 +1023,12 @@ public class ControladorVeterinaria implements ActionListener {
             else{
                 JOptionPane.showMessageDialog(main, "Generación de reporte cancelada", "Cancelado", JOptionPane.WARNING_MESSAGE);
             }
+        }
+        
+        //FUNCION UMBRAL
+        if (ae.getSource() == main.getjMenuItemListarUmbral()) {
+            VentanaListarUmbral ventanaUmbral = new VentanaListarUmbral(veterinaria);
+            ventanaUmbral.setVisible(true);
         }
 
 //===============================  MENU SALIR  =================================
