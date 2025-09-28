@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ArrayList;
 import util.ReporteManager;
 import persistencia.GestorCSV;
+import exception.*;
 
 public class ControladorVeterinaria implements ActionListener {
     private Veterinaria veterinaria;
@@ -40,7 +41,6 @@ public class ControladorVeterinaria implements ActionListener {
     private VentanaListarMascotas listarMascotas;
     private VentanaListarServicios listarServicios;
     private VentanaListarClientesFrecuentes listarClientesFrecuentes;
-    private VentanaAnalisisServicios listarUmbral;
     
     public void iniciar() {
         veterinaria = new Veterinaria(); //Iniciar veterinaria
@@ -109,11 +109,21 @@ public class ControladorVeterinaria implements ActionListener {
             String rut = agregarCliente.getjTextFieldRut().getText();
             String telefono = agregarCliente.getjTextFieldTelefono().getText();
             String direccion = agregarCliente.getjTextFieldDireccion().getText();
-            
-            if (veterinaria.agregarCliente(nombre, rut, telefono, direccion)) {
-                JOptionPane.showMessageDialog(agregarCliente, "Cliente agregado exitosamente.");
+
+            try {
+                validarFormatoRUT(rut);
+                validarFormatoTelefono(telefono);
+
+                if (veterinaria.agregarCliente(nombre, rut, telefono, direccion)) {
+                    JOptionPane.showMessageDialog(agregarCliente, "Cliente agregado exitosamente.");
+                }
+                agregarCliente.dispose();
+
+            } catch (FormatoRUTInvalidoException e) {
+                JOptionPane.showMessageDialog(agregarCliente, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+            } catch (FormatoTelefonoInvalidoException e) {
+                JOptionPane.showMessageDialog(agregarCliente, e.getMessage(), "Error de formato de teléfono", JOptionPane.ERROR_MESSAGE);
             }
-            agregarCliente.dispose();
             return;
         }
         
@@ -136,19 +146,27 @@ public class ControladorVeterinaria implements ActionListener {
         //BUSCAR CLIENTE - BOTÓN BUSCAR
         if (buscarCliente != null && ae.getSource() == buscarCliente.getjButtonBuscar()) {
             String rut = buscarCliente.getjTextFieldRut().getText();
-            Cliente cliente = veterinaria.buscarClientePorRut(rut);
-            if (cliente != null) {
-                String info = "Cliente: " + cliente.getNombre() + "\n" +
-                             "RUT: " + cliente.getRut() + "\n" +
-                             "Teléfono: " + cliente.getTelefono() + "\n" +
-                             "Dirección: " + cliente.getDireccion() + "\n" +
-                             "Mascotas: " + cliente.getMascotas().size();
-                JOptionPane.showMessageDialog(buscarCliente, info);
-            } else {
-                JOptionPane.showMessageDialog(buscarCliente, "Cliente no encontrado.");
+
+            try { // Validar formato del RUT antes de realizar la búsqueda
+                validarFormatoRUT(rut);
+                Cliente cliente = veterinaria.buscarClientePorRut(rut); // Si el formato es válido, proceder con la búsqueda en la base de datos
+                if (cliente != null) { //Si el cliente se encuentra se muestra la información
+                    String info = "Cliente: " + cliente.getNombre() + "\n" +
+                                 "RUT: " + cliente.getRut() + "\n" +
+                                 "Teléfono: " + cliente.getTelefono() + "\n" +
+                                 "Dirección: " + cliente.getDireccion() + "\n" +
+                                 "Mascotas: " + cliente.getMascotas().size();
+                    JOptionPane.showMessageDialog(buscarCliente, info);
+                } else {
+                    JOptionPane.showMessageDialog(buscarCliente, "Cliente no encontrado."); // RUT válido pero cliente no existe en el sistema
+                }
+
+            } catch (FormatoRUTInvalidoException e) { // Capturar y mostrar error de formato de RUT sin realizar búsqueda
+                JOptionPane.showMessageDialog(buscarCliente, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
             }
             return;
         }
+            
 
         //BUSCAR CLIENTE - BOTÓN CANCELAR
         if (buscarCliente != null && ae.getSource() == buscarCliente.getjButtonCancelar()) { //Cancelar buscar
@@ -169,15 +187,25 @@ public class ControladorVeterinaria implements ActionListener {
         //EDITAR CLIENTE - BOTÓN BUSCAR
         if(editarCliente != null && ae.getSource() == editarCliente.getBtnBuscar()){
             String rut = editarCliente.getTxtRut().getText();
-            Cliente cliente = veterinaria.buscarClientePorRut(rut);
-            if(cliente != null){
-                editarCliente.getTxtNombre().setText(cliente.getNombre());
-                editarCliente.getTxtTelefono().setText(cliente.getTelefono());
-                editarCliente.getTxtDireccion().setText(cliente.getDireccion());
-                editarCliente.habilitarEdicion(true);
-            }
-            else{
-                JOptionPane.showMessageDialog(editarCliente, "Cliento no encontrado");
+
+            try { // Validar formato del RUT antes de proceder con la búsqueda
+                validarFormatoRUT(rut);
+                Cliente cliente = veterinaria.buscarClientePorRut(rut); // Buscar cliente con RUT válido en el sistema
+
+                if(cliente != null){ // Cliente encontrado - cargar datos en los campos de edición
+                    editarCliente.getTxtNombre().setText(cliente.getNombre());
+                    editarCliente.getTxtTelefono().setText(cliente.getTelefono());
+                    editarCliente.getTxtDireccion().setText(cliente.getDireccion());
+                    editarCliente.habilitarEdicion(true); // Habilitar campos para permitir edición
+                }
+                else{
+                    JOptionPane.showMessageDialog(editarCliente, "Cliente no encontrado"); // RUT válido pero cliente no existe
+                    editarCliente.limpiarCampos(); // Limpiar campos para evitar confusión
+                }
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato
+                JOptionPane.showMessageDialog(editarCliente, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+                // Limpiar campos
                 editarCliente.limpiarCampos();
             }
             return;
@@ -189,13 +217,21 @@ public class ControladorVeterinaria implements ActionListener {
             String nombre = editarCliente.getTxtNombre().getText();
             String telefono = editarCliente.getTxtTelefono().getText();
             String direccion = editarCliente.getTxtDireccion().getText();
-            
-            if(veterinaria.editarCliente(rut, nombre, telefono, direccion)){
-                JOptionPane.showMessageDialog(editarCliente, "Cliente editado exitosamente");
-                editarCliente.dispose();
-            }
-            else{
-                JOptionPane.showMessageDialog(editarCliente, "Error al editar cliente");
+
+            try { // Validar formato del teléfono modificado (RUT ya fue validado en búsqueda)
+                validarFormatoTelefono(telefono);
+
+                if(veterinaria.editarCliente(rut, nombre, telefono, direccion)){  // Intentar guardar los cambios en el sistema
+                    JOptionPane.showMessageDialog(editarCliente, "Cliente editado exitosamente"); // Edición exitosa
+                    editarCliente.dispose();
+                }
+                else{
+                    JOptionPane.showMessageDialog(editarCliente, "Error al editar cliente"); // Error en la edición
+                }
+
+            } catch (FormatoTelefonoInvalidoException e) { // Error de formato en teléfono
+                JOptionPane.showMessageDialog(editarCliente, e.getMessage(), "Error de formato de teléfono", JOptionPane.ERROR_MESSAGE);
+                editarCliente.getTxtTelefono().requestFocus(); // Enfocar el campo de teléfono para facilitar corrección
             }
             return;
         }
@@ -217,19 +253,29 @@ public class ControladorVeterinaria implements ActionListener {
         }     
         
         //ELIMINAR CLIENTE - BOTÓN BUSCAR
-        if(eliminarCliente != null && ae.getSource() == eliminarCliente.getBtnBuscar()){
+         if(eliminarCliente != null && ae.getSource() == eliminarCliente.getBtnBuscar()){
             String rut = eliminarCliente.getTxtRut().getText();
-            Cliente cliente = veterinaria.buscarClientePorRut(rut);
-            if(cliente != null){
-                eliminarCliente.getTxtNombre().setText(cliente.getNombre());
-                eliminarCliente.getTxtTelefono().setText(cliente.getTelefono());
-                eliminarCliente.getTxtDireccion().setText(cliente.getDireccion());
-                eliminarCliente.getTxtNumMascotas().setText(String.valueOf(cliente.getMascotas().size()));
-                eliminarCliente.habilitarEliminacion(true);
-            }
-            else{
-                JOptionPane.showMessageDialog(eliminarCliente, "Cliente no encontrado");
-                eliminarCliente.limpiarCampos();
+
+            try { // Validar formato del RUT antes de realizar búsqueda
+                validarFormatoRUT(rut);
+                Cliente cliente = veterinaria.buscarClientePorRut(rut); // Buscar cliente en el sistema con RUT válido
+
+                if(cliente != null){ // Cliente encontrado, mostrar informacion
+                    eliminarCliente.getTxtNombre().setText(cliente.getNombre());
+                    eliminarCliente.getTxtTelefono().setText(cliente.getTelefono());
+                    eliminarCliente.getTxtDireccion().setText(cliente.getDireccion());
+                    eliminarCliente.getTxtNumMascotas().setText(String.valueOf(cliente.getMascotas().size())); // Mostrar número de mascotas asociadas
+
+                    eliminarCliente.habilitarEliminacion(true); // Habilitar el botón eliminar después de cargar datos
+                }
+                else{ // RUT válido pero cliente no existe en el sistema
+                    JOptionPane.showMessageDialog(eliminarCliente, "Cliente no encontrado");
+                    eliminarCliente.limpiarCampos(); // Limpiar campos
+                }
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato
+                JOptionPane.showMessageDialog(eliminarCliente, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+                eliminarCliente.limpiarCampos(); // Limpiar campos
             }
             return;
         }
@@ -280,53 +326,58 @@ public class ControladorVeterinaria implements ActionListener {
             String tipo = agregarMascota.getjTextFieldTipo().getText();
             String raza = agregarMascota.getjTextFieldRaza().getText();
             String edadTexto = agregarMascota.getjTextFieldEdad().getText();
-            
-            if (edadTexto.isEmpty()) {
-                JOptionPane.showMessageDialog(agregarMascota, "La edad no puede estar vacía");
-                return;
-            }
-            
-            int edad;
-            try {
-                edad = Integer.parseInt(edadTexto);
-                if (edad <= 0) {
-                    JOptionPane.showMessageDialog(agregarMascota, "La edad debe ser mayor a 0");
+
+            try { // Validar formato del RUT
+                validarFormatoRUT(rutDueno);
+                if (edadTexto.isEmpty()) { // Validar que la edad no esté vacía
+                    JOptionPane.showMessageDialog(agregarMascota, "La edad no puede estar vacía");
                     return;
                 }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(agregarMascota, "La edad debe ser un número válido"); 
-                return;
-            }
-       
-            Cliente dueno = veterinaria.buscarClientePorRut(rutDueno);
-            if (dueno != null) {
-                int opcion = JOptionPane.showConfirmDialog(agregarMascota, "¿Es una mascota geriátrica (mayor o con cuidados especiales)?", "Tipo de Mascota", JOptionPane.YES_NO_OPTION);
-                if (opcion == JOptionPane.YES_OPTION) {
-                    String fechaInicio = JOptionPane.showInputDialog("Fecha inicio cuidados geriátricos (dd/mm/yyyy):");
-                    if (fechaInicio != null && !fechaInicio.trim().isEmpty()) {
-                        if (veterinaria.agregarMascotaGeriatrica(rutDueno, nombre, tipo, raza, edad, fechaInicio)) {
-                            JOptionPane.showMessageDialog(agregarMascota,
-                                "Mascota geriátrica agregada exitosamente.\n" +
-                                "Cuidados especiales: " + new MascotaGeriatrica(nombre, tipo, raza, edad, fechaInicio).obtenerCuidadosEspeciales());
-                        } else {
-                            JOptionPane.showMessageDialog(agregarMascota, "Error al agregar mascota geriátrica");
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(agregarMascota, "La fecha de inicio es requerida para mascotas geriátricas");
-                        return;
-                    }
-                } else {
-                    // AGREGAR COMO MASCOTA NORMAL
-                    dueno.agregarMascota(nombre, tipo, raza, edad);
-                    JOptionPane.showMessageDialog(agregarMascota, "Mascota normal agregada exitosamente.");
+
+                int edad; // Convertir y validar rango de edad
+                try {
+                    edad = Integer.parseInt(edadTexto); // Aplicar validación de rango para edad de mascota
+                    validarEdad(edad);
+
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(agregarMascota, "La edad debe ser un número válido"); 
+                    return;
+                } catch (RangoInvalidoException e) { // Error de rango de edad
+                    JOptionPane.showMessageDialog(agregarMascota, e.getMessage(), "Error de rango de edad", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
-            } else {
-                JOptionPane.showMessageDialog(agregarMascota, "Cliente no encontrado.");
+                Cliente dueno = veterinaria.buscarClientePorRut(rutDueno); // Buscar dueño con RUT válido
+                if (dueno != null) { // Determinar tipo de mascota (normal o geriátrica)
+                    int opcion = JOptionPane.showConfirmDialog(agregarMascota, "¿Es una mascota geriátrica (mayor o con cuidados especiales)?", "Tipo de Mascota", JOptionPane.YES_NO_OPTION);
+
+                    if (opcion == JOptionPane.YES_OPTION) { // Proceso para mascota geriátrica
+                        String fechaInicio = JOptionPane.showInputDialog("Fecha inicio cuidados geriátricos (dd/mm/yyyy):");
+                        if (fechaInicio != null && !fechaInicio.trim().isEmpty()) {
+                            if (veterinaria.agregarMascotaGeriatrica(rutDueno, nombre, tipo, raza, edad, fechaInicio)) {
+                                JOptionPane.showMessageDialog(agregarMascota,
+                                    "Mascota geriátrica agregada exitosamente.\n" +
+                                    "Cuidados especiales: " + new MascotaGeriatrica(nombre, tipo, raza, edad, fechaInicio).obtenerCuidadosEspeciales());
+                            } else {
+                                JOptionPane.showMessageDialog(agregarMascota, "Error al agregar mascota geriátrica");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(agregarMascota, "La fecha de inicio es requerida para mascotas geriátricas");
+                            return;
+                        }
+                    } else { // Agregar como mascota normal
+                        dueno.agregarMascota(nombre, tipo, raza, edad);
+                        JOptionPane.showMessageDialog(agregarMascota, "Mascota normal agregada exitosamente.");
+                    }
+                } else { // RUT válido pero dueño no existe
+                    JOptionPane.showMessageDialog(agregarMascota, "Cliente no encontrado.");
+                }
+                agregarMascota.dispose();
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(agregarMascota, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
             }
-            agregarMascota.dispose();
             return;
-        }
-                
+        }            
         
         //AGREGAR MASCOTA - BOTÓN CANCELAR       
         if (agregarMascota != null && ae.getSource() == agregarMascota.getjButtonCancelar()) {
@@ -347,37 +398,48 @@ public class ControladorVeterinaria implements ActionListener {
         //BUSCAR MASCOTA - BOTON BUSCAR      
         if (buscarMascota != null && ae.getSource() == buscarMascota.getBtnBuscar()) {
             String rutDueno = buscarMascota.getTxtRutDueno().getText();
-            String nombreMascota = buscarMascota.getTxtNombreMascota().getText();           
-            Cliente cliente = veterinaria.buscarClientePorRut(rutDueno);
-            if(cliente != null){
-                Mascota mascota = cliente.buscarMascotaPorNombre(nombreMascota);
-                if (mascota != null) {
-                    String info = "Nombre: " + mascota.getNombre() + "\n" +
-                                 "Dueño:" + cliente.getNombre () + " (RUT:" + cliente.getRut() + ")" + "\n" +
-                                 "Tipo: " + mascota.getTipo() + "\n" +
-                                 "Raza: " + mascota.getRaza() + "\n" +
-                                 "Edad: " + mascota.getEdad() + " años\n" +
-                                 "Categoría: ";
-                    if(mascota instanceof MascotaGeriatrica){
-                        MascotaGeriatrica geriatrica = (MascotaGeriatrica) mascota;
-                        info += "GERIÁTRICA\n";
-                        info += "Fecha inicio cuidados: " + geriatrica.getFechaInicioGeriatria() + "\n";
-                        info += "Cuidados especiales: " + geriatrica.obtenerCuidadosEspeciales() + "\n";
-                        info += "Frecuencia visitas: " + geriatrica.obtenerFrecuenciaVisitas() + " meses\n";
-                        info += "Medicamentos: " + geriatrica.getMedicamentosHabituales();
+            String nombreMascota = buscarMascota.getTxtNombreMascota().getText();
+
+            try { // Validar formato del RUT
+                validarFormatoRUT(rutDueno); // Buscar cliente con RUT válido en el sistema
+
+                Cliente cliente = veterinaria.buscarClientePorRut(rutDueno);
+
+                if(cliente != null){ // Cliente encontrado
+                    Mascota mascota = cliente.buscarMascotaPorNombre(nombreMascota);
+
+                    if (mascota != null) { //Mostrar información
+                        String info = "Nombre: " + mascota.getNombre() + "\n" +
+                                     "Dueño:" + cliente.getNombre () + " (RUT:" + cliente.getRut() + ")" + "\n" +
+                                     "Tipo: " + mascota.getTipo() + "\n" +
+                                     "Raza: " + mascota.getRaza() + "\n" +
+                                     "Edad: " + mascota.getEdad() + " años\n" +
+                                     "Categoría: ";
+                        if(mascota instanceof MascotaGeriatrica){ // Verificar si es mascota geriátrica para mostrar información adicional
+                            MascotaGeriatrica geriatrica = (MascotaGeriatrica) mascota;
+                            info += "GERIÁTRICA\n";
+                            info += "Fecha inicio cuidados: " + geriatrica.getFechaInicioGeriatria() + "\n";
+                            info += "Cuidados especiales: " + geriatrica.obtenerCuidadosEspeciales() + "\n";
+                            info += "Frecuencia visitas: " + geriatrica.obtenerFrecuenciaVisitas() + " meses\n";
+                            info += "Medicamentos: " + geriatrica.getMedicamentosHabituales();
+                        }
+                        else{ // Información para mascota normal
+                            info += "Normal\n";
+                            info += "Cuidados: " + mascota.obtenerCuidadosEspeciales() + "\n";
+                            info += "Frecuencia visitas: " + mascota.obtenerFrecuenciaVisitas() + " meses";
+                        }
+
+                        JOptionPane.showMessageDialog(buscarMascota, info); // Mostrar información completa
+                    } else { // Cliente existe pero mascota con ese nombre no encontrada
+                        JOptionPane.showMessageDialog(buscarMascota, "Mascota no encontrada.");
                     }
-                    else{
-                        info += "Normal\n";
-                        info += "Cuidados: " + mascota.obtenerCuidadosEspeciales() + "\n";
-                        info += "Frecuencia visitas: " + mascota.obtenerFrecuenciaVisitas() + " meses";
-                    }
-                    JOptionPane.showMessageDialog(buscarMascota, info);
-                } else {
-                    JOptionPane.showMessageDialog(buscarMascota, "Mascota no encontrada.");
+                } else { // RUT válido pero cliente no existe en el sistema
+                    JOptionPane.showMessageDialog(buscarMascota, "Cliente no encontrado.");
                 }
-                return;
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(buscarMascota, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
             }
-            JOptionPane.showMessageDialog(buscarMascota, "Cliente no encontrado.");
             return;
         }
         
@@ -402,23 +464,33 @@ public class ControladorVeterinaria implements ActionListener {
         if(editarMascota != null && ae.getSource() == editarMascota.getBtnBuscar()){
             String rutDueno = editarMascota.getTxtRutDueno().getText();
             String nombreMascota = editarMascota.getTxtNombreMascota().getText();
-            Cliente cliente = veterinaria.buscarClientePorRut(rutDueno);
-            if(cliente != null){
-                Mascota mascota = cliente.buscarMascotaPorNombre(nombreMascota);
-                if(mascota != null){
-                    editarMascota.getTxtTipo().setText(mascota.getTipo());
-                    editarMascota.getTxtRaza().setText(mascota.getRaza());
-                    editarMascota.getTxtEdad().setText(String.valueOf(mascota.getEdad()));
-                    editarMascota.habilitarEdicion(true);
+
+            try { // Validar formato del RUT
+                validarFormatoRUT(rutDueno); // Buscar cliente con RUT
+                Cliente cliente = veterinaria.buscarClientePorRut(rutDueno);
+
+                if(cliente != null){ // Cliente encontrado
+                    Mascota mascota = cliente.buscarMascotaPorNombre(nombreMascota);
+
+                    if(mascota != null){ // Mascota encontrada
+                        editarMascota.getTxtTipo().setText(mascota.getTipo());
+                        editarMascota.getTxtRaza().setText(mascota.getRaza());
+                        editarMascota.getTxtEdad().setText(String.valueOf(mascota.getEdad()));
+                        editarMascota.habilitarEdicion(true); // Habilitar campos de edición
+                    }
+                    else{ // Cliente existe pero no tiene mascota con ese nombre
+                        JOptionPane.showMessageDialog(editarMascota, "Mascota no encontrada");
+                        editarMascota.limpiarCampos(); // Limpiar campos
+                    }
                 }
                 else{
-                    JOptionPane.showMessageDialog(editarMascota, "Mascota no encontrado");
-                editarMascota.limpiarCampos();
+                    JOptionPane.showMessageDialog(editarMascota, "Cliente no encontrado"); // RUT válido pero cliente no existe en el sistema
+                    editarMascota.limpiarCampos(); // Limpiar campos
                 }
-            }
-            else{
-                JOptionPane.showMessageDialog(editarMascota, "Cleinte no encontrado");
-                editarMascota.limpiarCampos();
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(editarMascota, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+                editarMascota.limpiarCampos(); // Limpiar campos
             }
             return;
         }
@@ -429,14 +501,27 @@ public class ControladorVeterinaria implements ActionListener {
             String nombreMascota = editarMascota.getTxtNombreMascota().getText();
             String tipo = editarMascota.getTxtTipo().getText();
             String raza = editarMascota.getTxtRaza().getText();
-            int edad = Integer.parseInt(editarMascota.getTxtEdad().getText());
-            
-            if(veterinaria.editarMascota(rutDueno, nombreMascota, tipo, raza, edad)){
-                JOptionPane.showMessageDialog(editarMascota, "Mascota editada exitosamente");
-                editarMascota.dispose();
-            }
-            else{
-                JOptionPane.showMessageDialog(editarMascota, "Errora al editar mascota");
+            String edadTexto = editarMascota.getTxtEdad().getText();
+
+            try { // Convertir y validar la nueva edad ingresada
+                int edad = Integer.parseInt(edadTexto);
+                validarEdad(edad); // Aplicar validación de rango para la edad modificada
+                if(veterinaria.editarMascota(rutDueno, nombreMascota, tipo, raza, edad)){ // Intentar guardar los cambios en el sistema
+                    JOptionPane.showMessageDialog(editarMascota, "Mascota editada exitosamente"); // Edición exitosa
+                    editarMascota.dispose();
+                }
+                else{
+                    JOptionPane.showMessageDialog(editarMascota, "Error al editar mascota"); // Error en la edición
+                }
+
+            } catch (NumberFormatException e) { // Error de formato numérico en edad
+                JOptionPane.showMessageDialog(editarMascota, "La edad debe ser un número válido", "Error de formato", JOptionPane.ERROR_MESSAGE);
+                editarMascota.getTxtEdad().requestFocus();
+
+            } catch (RangoInvalidoException e) { // Error de rango en edad
+                JOptionPane.showMessageDialog(editarMascota, e.getMessage(), "Error de rango de edad", JOptionPane.ERROR_MESSAGE);
+                editarMascota.getTxtEdad().setText("");
+                editarMascota.getTxtEdad().requestFocus();
             }
             return;
         }
@@ -461,24 +546,33 @@ public class ControladorVeterinaria implements ActionListener {
         if(eliminarMascota != null && ae.getSource() == eliminarMascota.getBtnBuscar()){
             String rutDueno = eliminarMascota.getTxtRutDueno().getText();
             String nombreMascota = eliminarMascota.getTxtNombre().getText();
-            
-            Cliente dueno = veterinaria.buscarClientePorRut(rutDueno);
-            if(dueno != null){
-                Mascota mascota = dueno.buscarMascotaPorNombre(nombreMascota);
-                if(mascota != null){
-                    eliminarMascota.getTxtTipo().setText(mascota.getTipo());
-                    eliminarMascota.getTxtRaza().setText(mascota.getRaza());
-                    eliminarMascota.getTxtEdad().setText(String.valueOf(mascota.getEdad()));
-                    eliminarMascota.habilitarEliminacion(true);
+
+            try { // Validar formato del RUT 
+                validarFormatoRUT(rutDueno);
+                Cliente dueno = veterinaria.buscarClientePorRut(rutDueno); // Buscar cliente con RUT
+
+                if(dueno != null){ // Cliente encontrado
+                    Mascota mascota = dueno.buscarMascotaPorNombre(nombreMascota);
+
+                    if(mascota != null){ // Mascota encontrada
+                        eliminarMascota.getTxtTipo().setText(mascota.getTipo());
+                        eliminarMascota.getTxtRaza().setText(mascota.getRaza());
+                        eliminarMascota.getTxtEdad().setText(String.valueOf(mascota.getEdad()));
+                        eliminarMascota.habilitarEliminacion(true); // Habilitar botón eliminar
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(eliminarMascota, "Mascota no encontrada"); // Cliente existe pero no tiene mascota con ese nombre
+                        eliminarMascota.limpiarCampos(); // Limpiar campos
+                    }
                 }
                 else{
-                    JOptionPane.showMessageDialog(eliminarMascota, "Mascota no encontrada");
-                    eliminarMascota.limpiarCampos();
+                    JOptionPane.showMessageDialog(eliminarMascota, "Cliente no encontrado"); // RUT válido pero cliente no existe en el sistema
+                    eliminarMascota.limpiarCampos(); // Limpiar campos
                 }
-            }
-            else{
-                JOptionPane.showMessageDialog(eliminarMascota, "Cliente no encontrado");
-                eliminarMascota.limpiarCampos();
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT 
+                JOptionPane.showMessageDialog(eliminarMascota, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+                eliminarMascota.limpiarCampos(); // Limpiar campos
             }
             return;
         }
@@ -487,18 +581,24 @@ public class ControladorVeterinaria implements ActionListener {
         if(eliminarMascota != null && ae.getSource() == eliminarMascota.getBtnEliminar()){
             String rutDueno = eliminarMascota.getTxtRutDueno().getText();
             String nombreMascota = eliminarMascota.getTxtNombre().getText();
-            
-            int confirmacion = JOptionPane.showConfirmDialog(eliminarMascota,
-                    "Estas seguro de querer eliminar esta mascota?",
-                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-            if(confirmacion == JOptionPane.YES_OPTION){
-                if(veterinaria.eliminarMascota(rutDueno, nombreMascota)){
-                    JOptionPane.showMessageDialog(eliminarMascota, "Mascota eliminada exitosamente");
-                    eliminarMascota.dispose();
+
+            try { // Validar formato del RUT 
+                validarFormatoRUT(rutDueno); // Solicitar confirmación
+                int confirmacion = JOptionPane.showConfirmDialog(eliminarMascota,
+                        "Estas seguro de querer eliminar esta mascota?",
+                        "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+
+                if(confirmacion == JOptionPane.YES_OPTION){ // Usuario confirmó
+                    if(veterinaria.eliminarMascota(rutDueno, nombreMascota)){ // Eliminación exitosa
+                        JOptionPane.showMessageDialog(eliminarMascota, "Mascota eliminada exitosamente");
+                        eliminarMascota.dispose();
+                    }
+                    else{ // Error en eliminación
+                        JOptionPane.showMessageDialog(eliminarMascota, "Error al eliminar mascota");
+                    }
                 }
-                else{
-                    JOptionPane.showMessageDialog(eliminarMascota, "Error al eliminar mascota");
-                }
+            } catch (FormatoRUTInvalidoException e) { // Si el usuario seleccionó "NO"
+                JOptionPane.showMessageDialog(eliminarMascota, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE); // Error de formato de RUT 
             }
             return;
         }
@@ -525,14 +625,24 @@ public class ControladorVeterinaria implements ActionListener {
         //AGREGAR SERVICIO - BOTÓN BUSCAR      
         if (agregarServicio != null && ae.getSource() == agregarServicio.getBtnBuscar()) {
             String rutDueno = agregarServicio.getTxtRutDueno().getText();
-            Cliente dueno = veterinaria.buscarClientePorRut(rutDueno);
-            if(dueno != null){
-                agregarServicio.cargarMascotasDelCliente(dueno);
-                JOptionPane.showMessageDialog(agregarServicio, "Cliente encontrado, seleccione una o más mascotas");
-            }
-            else{
-                JOptionPane.showMessageDialog(agregarServicio, "Cliente no encontrado");
-                agregarServicio.limpiarMascotas();
+
+            try { // Validar formato del RUT
+                validarFormatoRUT(rutDueno);
+                Cliente dueno = veterinaria.buscarClientePorRut(rutDueno); // Buscar cliente con RUT
+
+                if(dueno != null){ // Cliente encontrado
+                    agregarServicio.cargarMascotasDelCliente(dueno);
+                    JOptionPane.showMessageDialog(agregarServicio, "Cliente encontrado, seleccione una o más mascotas");
+                }
+                else{
+                    JOptionPane.showMessageDialog(agregarServicio, "Cliente no encontrado"); // RUT válido pero cliente no existe en el sistema
+                    agregarServicio.limpiarMascotas(); // Limpiar lista de mascotas
+                }
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(agregarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+
+                agregarServicio.limpiarMascotas(); // Limpiar mascotas
             }
             return;
         }
@@ -548,93 +658,98 @@ public class ControladorVeterinaria implements ActionListener {
             String precioTexto = agregarServicio.getTxtPrecio().getText().trim();
             String estado = (String)agregarServicio.getComboEstado().getSelectedItem();
             boolean esUrgencia = agregarServicio.getChkEsUrgencia().isSelected();
-            
-            if(rutDueno.isEmpty() || nombreMascota == null || tipoServicio.isEmpty() ||
-                fecha.isEmpty() || hora.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty()){
-                JOptionPane.showMessageDialog(agregarServicio, "Por favor, completa todos los campos");
-                return;
-            }
-            
-            if(esUrgencia){
-                String motivoUrgencia = agregarServicio.getTxtMotivoUrgencia().getText().trim();
-                if(motivoUrgencia.isEmpty()){
-                    JOptionPane.showMessageDialog(agregarServicio, "El motivo de urgencia es requerido para servicios de urgencia");
-                    return;
-               } 
-            }
-            
-            int precio = 0 ;
-            try{
-                precio = Integer.parseInt(precioTexto);
-                if(precio <= 0){
-                    JOptionPane.showMessageDialog(agregarServicio, "El precio debe ser mayor a 0");
-                    agregarServicio.getTxtPrecio().setText(""); //Limpiar el campo incorrecto
-                    agregarServicio.getTxtPrecio().requestFocus(); //Resaltar el campo a corregir
+
+            try { // Validar formato del RUT
+                validarFormatoRUT(rutDueno);
+                if(rutDueno.isEmpty() || nombreMascota == null || tipoServicio.isEmpty() ||
+                    fecha.isEmpty() || hora.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty()){
+                    JOptionPane.showMessageDialog(agregarServicio, "Por favor, completa todos los campos"); // Validar que todos los campos obligatorios estén completos
                     return;
                 }
-            }catch(NumberFormatException e){
-                JOptionPane.showMessageDialog(agregarServicio, "El precio debe ser un número válido");
-                agregarServicio.getTxtPrecio().setText(""); //Limpiar el campo incorrecto
-                agregarServicio.getTxtPrecio().requestFocus(); //Resaltar el campo a corregir
-                return;
-            }
-            Cliente dueno = veterinaria.buscarClientePorRut(rutDueno);
-            if(dueno != null){
-                Mascota mascota = dueno.buscarMascotaPorNombre(nombreMascota);
-                if(mascota != null){
-                    
-                    int precioConDescuento = veterinaria.calcularPrecioConDescuento(rutDueno, precio);
-                    double factorMascota = mascota.calcularFactorPrecio();
-                    int precioFinal = (int)(precioConDescuento * factorMascota);
-                    
-                    if(esUrgencia){
-                        int nivelUrgencia = Integer.parseInt((String)agregarServicio.getComboNivelUrgencia().getSelectedItem());
-                        String motivoUrgencia = agregarServicio.getTxtMotivoUrgencia().getText();
-                        boolean requiereAtencionInmediata = agregarServicio.getChkAtencionInmediata().isSelected();
-                        ServicioUrgencia servicioUrgencia = new ServicioUrgencia(
-                                tipoServicio, fecha, hora, descripcion, precioFinal, estado,
-                                nivelUrgencia, motivoUrgencia, requiereAtencionInmediata);
-                        mascota.agregarServicio(servicioUrgencia);        
-                        String mensaje = "Servicio de urgencia agregado correctamente\n\n";
-                        mensaje += "=== DETALLES DE URGENCIA ===\n";
-                        mensaje += "Nivel: " + nivelUrgencia + "/5\n";
-                        mensaje += "Motivo: " + motivoUrgencia + "\n";
-                        mensaje += "Atención inmediata: " + (requiereAtencionInmediata ? "SÍ" : "NO") + "\n";
-                        int precioConRecargo = servicioUrgencia.calcularPrecioFinal();
-                        double porcentajeRecargo = ((double)precioConRecargo / precioFinal - 1) * 100;
-                        mensaje += "Recargo aplicado: " + (int)porcentajeRecargo + "%\n";
-                        if(precioFinal < precio){
-                            mensaje += "\nPrecio original: $" + precio;
-                            mensaje += "\nPrecio con descuentos: $" + precioFinal; 
-                        }
-                        mensaje += "\nPrecio final con urgencia: $" + precioConRecargo;
-                        mensaje += "\n\n=== INSTRUCCIONES ===\n";
-                        mensaje += servicioUrgencia.obtenerInstruccionesEspeciales();
-                        if (servicioUrgencia.esEmergenciaCritica()) {
-                            mensaje += "\n\n⚠️ EMERGENCIA CRÍTICA - PRIORIDAD MÁXIMA ⚠️";
-                            JOptionPane.showMessageDialog(agregarServicio, mensaje, "Servicio de Urgencia Crítica", JOptionPane.ERROR_MESSAGE);
-                        }
-                        else{
-                            JOptionPane.showMessageDialog(agregarServicio, mensaje, "Servicio de Urgencia", JOptionPane.WARNING_MESSAGE);
 
-                        }
-                    }
-                    else{
-                        mascota.agregarServicio(tipoServicio, fecha, hora, descripcion, precioFinal, estado);
-                        String mensaje = "Servicio agregado correctamente";
-                        if(precioFinal < precio){
-                            mensaje += "\n\n=== DESCUENTOS APLICADOS ===";
-                            mensaje += "\nTipo Cliente: " + dueno.obtenerTipoCliente();
-                            mensaje += "\nPrecio Original: $" + precio;
-                            if(precioConDescuento < precio){
-                                mensaje += "\nDescuento cliente: $" + precioConDescuento + " (" + (int)(dueno.calcularDescuento() * 100) + "%)";                             
+                if(esUrgencia){ // Validar información adicional
+                    String motivoUrgencia = agregarServicio.getTxtMotivoUrgencia().getText().trim();
+                    if(motivoUrgencia.isEmpty()){
+                        JOptionPane.showMessageDialog(agregarServicio, "El motivo de urgencia es requerido para servicios de urgencia");
+                        return;
+                   } 
+                }
+                int precio = 0; //Convertir y validar precio
+                try{
+                    precio = Integer.parseInt(precioTexto); // Aplicar validación de rango para precio del servicio
+                    validarPrecio(precio);
+
+                } catch(NumberFormatException e){
+                    JOptionPane.showMessageDialog(agregarServicio, "El precio debe ser un número válido", "Error de formato", JOptionPane.ERROR_MESSAGE);
+                    agregarServicio.getTxtPrecio().setText("");
+                    agregarServicio.getTxtPrecio().requestFocus();
+                    return;
+                } catch(RangoInvalidoException e){
+                    JOptionPane.showMessageDialog(agregarServicio, e.getMessage(), "Error de rango de precio", JOptionPane.ERROR_MESSAGE);
+                    agregarServicio.getTxtPrecio().setText("");
+                    agregarServicio.getTxtPrecio().requestFocus();
+                    return;
+                }
+                Cliente dueno = veterinaria.buscarClientePorRut(rutDueno); // Buscar cliente y mascota para procesar servicio
+                if(dueno != null){
+                    Mascota mascota = dueno.buscarMascotaPorNombre(nombreMascota);
+                    if(mascota != null){
+                        int precioConDescuento = veterinaria.calcularPrecioConDescuento(rutDueno, precio); // Calcular precios con descuentos aplicables
+                        double factorMascota = mascota.calcularFactorPrecio();
+                        int precioFinal = (int)(precioConDescuento * factorMascota);
+
+                        if(esUrgencia){ // Procesar servicio de urgencia con información adicional
+                            int nivelUrgencia = Integer.parseInt((String)agregarServicio.getComboNivelUrgencia().getSelectedItem());
+                            String motivoUrgencia = agregarServicio.getTxtMotivoUrgencia().getText();
+                            boolean requiereAtencionInmediata = agregarServicio.getChkAtencionInmediata().isSelected();
+
+                            ServicioUrgencia servicioUrgencia = new ServicioUrgencia(
+                                    tipoServicio, fecha, hora, descripcion, precioFinal, estado,
+                                    nivelUrgencia, motivoUrgencia, requiereAtencionInmediata);
+                            mascota.agregarServicio(servicioUrgencia);
+       
+                            String mensaje = "Servicio de urgencia agregado correctamente\n\n";
+                            mensaje += "=== DETALLES DE URGENCIA ===\n";
+                            mensaje += "Nivel: " + nivelUrgencia + "/5\n";
+                            mensaje += "Motivo: " + motivoUrgencia + "\n";
+                            mensaje += "Atención inmediata: " + (requiereAtencionInmediata ? "SÍ" : "NO") + "\n";
+
+                            int precioConRecargo = servicioUrgencia.calcularPrecioFinal();
+                            double porcentajeRecargo = ((double)precioConRecargo / precioFinal - 1) * 100;
+                            mensaje += "Recargo aplicado: " + (int)porcentajeRecargo + "%\n";
+
+                            if(precioFinal < precio){
+                                mensaje += "\nPrecio original: $" + precio;
+                                mensaje += "\nPrecio con descuentos: $" + precioFinal; 
                             }
-                            if (factorMascota < 1.0) {
-                                mensaje += "\nDescuento mascota: " + (int)((1 - factorMascota) * 100) + "%"; 
+                            mensaje += "\nPrecio final con urgencia: $" + precioConRecargo;
+                            mensaje += "\n\n=== INSTRUCCIONES ===\n";
+                            mensaje += servicioUrgencia.obtenerInstruccionesEspeciales();
+
+                            if (servicioUrgencia.esEmergenciaCritica()) {
+                                mensaje += "\n\n⚠️ EMERGENCIA CRÍTICA - PRIORIDAD MÁXIMA ⚠️";
+                                JOptionPane.showMessageDialog(agregarServicio, mensaje, "Servicio de Urgencia Crítica", JOptionPane.ERROR_MESSAGE);
+                            } else{
+                                JOptionPane.showMessageDialog(agregarServicio, mensaje, "Servicio de Urgencia", JOptionPane.WARNING_MESSAGE);
+                            }
+                        } else{ // Procesar servicio normal
+                            mascota.agregarServicio(tipoServicio, fecha, hora, descripcion, precioFinal, estado);
+                            String mensaje = "Servicio agregado correctamente";
+
+                            if(precioFinal < precio){
+                                mensaje += "\n\n=== DESCUENTOS APLICADOS ===";
+                                mensaje += "\nTipo Cliente: " + dueno.obtenerTipoCliente();
+                                mensaje += "\nPrecio Original: $" + precio;
+                                if(precioConDescuento < precio){
+                                    mensaje += "\nDescuento cliente: $" + precioConDescuento + " (" + (int)(dueno.calcularDescuento() * 100) + "%)";                             
+                                }
+                                if (factorMascota < 1.0) {
+                                    mensaje += "\nDescuento mascota: " + (int)((1 - factorMascota) * 100) + "%"; 
+                                }
                             }
                             JOptionPane.showMessageDialog(agregarServicio, mensaje);
                         }
-                        boolean promocionado = veterinaria.verificarPromocionAutomatica(rutDueno);
+                        boolean promocionado = veterinaria.verificarPromocionAutomatica(rutDueno); // Verificar promoción automática a cliente frecuente
                         if (promocionado) {
                             Cliente clientePromovido = veterinaria.buscarClientePorRut(rutDueno);
                             JOptionPane.showMessageDialog(agregarServicio, 
@@ -646,16 +761,17 @@ public class ControladorVeterinaria implements ActionListener {
                             "¡Los próximos servicios tendrán descuento automático!",
                             "Cliente Frecuente", JOptionPane.INFORMATION_MESSAGE);
                         }
+                    } else{
+                        JOptionPane.showMessageDialog(agregarServicio, "Error: La mascota seleccionada no existe");                  
                     }
+                } else{
+                    JOptionPane.showMessageDialog(agregarServicio, "Error: El cliente no existe");
                 }
-                else{
-                    JOptionPane.showMessageDialog(agregarServicio, "Error: La mascota seleccionada no existe");                  
-                }
+                agregarServicio.dispose();
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(agregarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
             }
-            else{
-                JOptionPane.showMessageDialog(agregarServicio, "Error: El cliente no existe");
-            }
-            agregarServicio.dispose();
             return;
         }
         
@@ -678,20 +794,30 @@ public class ControladorVeterinaria implements ActionListener {
         //BUSCAR SERVICIO - BOTÓN BUSCAR CLIENTE
         if(buscarServicio != null && ae.getSource() == buscarServicio.getBtnBuscarCliente()){
             String rutCliente = buscarServicio.getTxtRutCliente().getText().trim();
-            if(rutCliente.isEmpty()){
-                JOptionPane.showMessageDialog(buscarServicio, "Por favor ingresa un rut");
-                return;
-            }
-            Cliente cliente = veterinaria.buscarClientePorRut(rutCliente);
-            if(cliente != null){
-                List<String> nombreMascotas = new ArrayList<>();
-                for(Mascota mascota : cliente.getMascotas()){
-                    nombreMascotas.add(mascota.getNombre());
+
+            try {
+                if(rutCliente.isEmpty()){ // Validar que el campo RUT no esté vacío
+                    JOptionPane.showMessageDialog(buscarServicio, "Por favor ingresa un RUT");
+                    return;
                 }
-                buscarServicio.cargarMascotasDelCliente(nombreMascotas);
-            } else{
-                JOptionPane.showMessageDialog(buscarServicio, "Cliente no encontrado");
-                buscarServicio.limpiarResultados();
+                validarFormatoRUT(rutCliente); //Validar formato del RUT
+                Cliente cliente = veterinaria.buscarClientePorRut(rutCliente); // Buscar cliente con RUT 
+
+                if(cliente != null){ // Cliente encontrado
+                    List<String> nombreMascotas = new ArrayList<>();
+                    for(Mascota mascota : cliente.getMascotas()){
+                        nombreMascotas.add(mascota.getNombre());
+                    }
+                    buscarServicio.cargarMascotasDelCliente(nombreMascotas); // Cargar mascotas en el combo
+
+                } else{ // RUT válido
+                    JOptionPane.showMessageDialog(buscarServicio, "Cliente no encontrado");
+                    buscarServicio.limpiarResultados(); // Limpiar resultados
+                }
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(buscarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+                buscarServicio.limpiarResultados(); // Limpiar resultados
             }
             return;
         }
@@ -700,26 +826,34 @@ public class ControladorVeterinaria implements ActionListener {
         if (buscarServicio != null && ae.getSource() == buscarServicio.getBtnBuscarMascota()) {
             String rutCliente = buscarServicio.getTxtRutCliente().getText().trim();
             String nombreMascota = "";
-            
-            if (buscarServicio.getComboMascotas().getSelectedItem() != null) {
-                nombreMascota = buscarServicio.getComboMascotas().getSelectedItem().toString();
-            }
-            else{
-                JOptionPane.showMessageDialog(buscarServicio, "Por favor, seleccione una mascota de la lista.");
-                return;
-            }
-            if (rutCliente.isEmpty() || nombreMascota.isEmpty()) {
-                JOptionPane.showMessageDialog(buscarServicio, "Por favor, complete RUT y seleccione una mascota.");
-                return;
-            }
-            List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
-            if(!servicios.isEmpty()){
-                buscarServicio.mostrarServicios(servicios);
-                JOptionPane.showMessageDialog(buscarServicio, "Se encontraron " + servicios.size() + " servicio(s) para la mascota");
-            }
-            else{
-                JOptionPane.showMessageDialog(buscarServicio, "No se encontraron servicios para la mascota seleccionada");
-                buscarServicio.limpiarResultados();
+
+            try { // Validar formato del RUT
+                validarFormatoRUT(rutCliente);
+                if (buscarServicio.getComboMascotas().getSelectedItem() != null) { // Verificar que se haya seleccionado una mascota del combo
+                    nombreMascota = buscarServicio.getComboMascotas().getSelectedItem().toString();
+                }
+                else{
+                    JOptionPane.showMessageDialog(buscarServicio, "Por favor, seleccione una mascota de la lista.");
+                    return;
+                }
+                if (rutCliente.isEmpty() || nombreMascota.isEmpty()) { // Validar que ambos campos estén completos
+                    JOptionPane.showMessageDialog(buscarServicio, "Por favor, complete RUT y seleccione una mascota.");
+                    return;
+                }
+                List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota); // Buscar servicios asociados a la mascota específica
+
+                if(!servicios.isEmpty()){ // Servicios encontrados
+                    buscarServicio.mostrarServicios(servicios);
+                    JOptionPane.showMessageDialog(buscarServicio, "Se encontraron " + servicios.size() + " servicio(s) para la mascota");
+                }
+                else{
+                    JOptionPane.showMessageDialog(buscarServicio, "No se encontraron servicios para la mascota seleccionada"); // No hay servicios registrados para esta mascota
+                    buscarServicio.limpiarResultados(); // Limpiar tabla
+                }
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(buscarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+                buscarServicio.limpiarResultados(); // Limpiar resultados
             }
             return;
         }
@@ -750,18 +884,28 @@ public class ControladorVeterinaria implements ActionListener {
         //EDITAR SERVICIO - BOTÓN BUSCAR CLIENTE
         if(editarServicio != null && ae.getSource() == editarServicio.getBtnBuscarCliente()){
             String rutCliente = editarServicio.getTxtRutCliente().getText().trim();
-            if(rutCliente.isEmpty()){
-                JOptionPane.showMessageDialog(editarServicio, "Por favor ingresa un RUT");
-                return;
-            }
-            Cliente cliente = veterinaria.buscarClientePorRut(rutCliente);
-            if(cliente != null){
-                editarServicio.cargarMascotasDelCliente(cliente);
-                JOptionPane.showMessageDialog(editarServicio, "Cliente encontrado, selecciona una mascota");
-            }
-            else{
-                JOptionPane.showMessageDialog(editarServicio, "Cliente no encontrado");
-                editarServicio.limpiarCampos();
+
+            try {
+                if(rutCliente.isEmpty()){ // Validar que el campo RUT no esté vacío
+                    JOptionPane.showMessageDialog(editarServicio, "Por favor ingresa un RUT");
+                    return;
+                }
+                validarFormatoRUT(rutCliente); // Validar formato del RUT 
+
+                Cliente cliente = veterinaria.buscarClientePorRut(rutCliente); //Buscar cliente con RUT
+
+                if(cliente != null){ // Cliente encontrado
+                    editarServicio.cargarMascotasDelCliente(cliente);
+                    JOptionPane.showMessageDialog(editarServicio, "Cliente encontrado, selecciona una mascota");
+                }
+                else{
+                    JOptionPane.showMessageDialog(editarServicio, "Cliente no encontrado"); // RUT válido pero cliente no existe en el sistema
+                    editarServicio.limpiarCampos(); // Limpiar campos
+                }
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(editarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+                editarServicio.limpiarCampos(); // Limpiar campos
             }
             return;
         }
@@ -770,27 +914,34 @@ public class ControladorVeterinaria implements ActionListener {
         if(editarServicio != null && ae.getSource() == editarServicio.getBtnBuscarMascota()){
             String rutCliente = editarServicio.getTxtRutCliente().getText().trim();
             String nombreMascota = "";
-            
-            if(editarServicio.getComboMascotas().getSelectedItem() != null){
-                nombreMascota = editarServicio.getComboMascotas().getSelectedItem().toString();
-            }
-            else{
-                JOptionPane.showMessageDialog(editarServicio, "Selecciona una mascota");
-                return;
-            }
-            
-            if(rutCliente.isEmpty() || nombreMascota.isEmpty()){
-                JOptionPane.showMessageDialog(editarServicio, "Completar RUT y seleccionar mascota");
-                return;
-            }  
-            List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
-            if(!servicios.isEmpty()){
-                editarServicio.cargarServiciosDeMascota(servicios);
-                JOptionPane.showMessageDialog(editarServicio, "Se encontraron " + servicios.size() + " servicios");
-            }
-            else{
-                JOptionPane.showMessageDialog(editarServicio, "No se encontraron servicios");
-                editarServicio.limpiarCampos();
+
+            try {
+                validarFormatoRUT(rutCliente); // Validar formato del RUT
+                if(editarServicio.getComboMascotas().getSelectedItem() != null){ // Verificar que se haya seleccionado una mascota del combo
+                    nombreMascota = editarServicio.getComboMascotas().getSelectedItem().toString();
+                }
+                else{
+                    JOptionPane.showMessageDialog(editarServicio, "Selecciona una mascota");
+                    return;
+                }
+                if(rutCliente.isEmpty() || nombreMascota.isEmpty()){ //Validar que ambos campos estén completos
+                    JOptionPane.showMessageDialog(editarServicio, "Completar RUT y seleccionar mascota");
+                    return;
+                }  
+                List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota); // Buscar servicios de la mascota para cargar en tabla
+
+                if(!servicios.isEmpty()){
+                    editarServicio.cargarServiciosDeMascota(servicios); // Servicios encontrados
+                    JOptionPane.showMessageDialog(editarServicio, "Se encontraron " + servicios.size() + " servicios");
+                }
+                else{
+                    JOptionPane.showMessageDialog(editarServicio, "No se encontraron servicios");
+                    editarServicio.limpiarCampos(); // Limpiar campos
+                }
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(editarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+                editarServicio.limpiarCampos(); // Limpiar campos
             }
             return;
         }
@@ -802,6 +953,7 @@ public class ControladorVeterinaria implements ActionListener {
                 JOptionPane.showMessageDialog(editarServicio, "Selecciona un servicio de la tabla");
                 return;
             }
+
             String rutCliente = editarServicio.getTxtRutCliente().getText().trim();
             String nombreMascota = editarServicio.getComboMascotas().getSelectedItem().toString();
             String tipoServicio = editarServicio.getTxtTipoServicio().getText();
@@ -810,32 +962,42 @@ public class ControladorVeterinaria implements ActionListener {
             String descripcion = editarServicio.getTxtDescripcion().getText();
             String precioTexto = editarServicio.getTxtPrecio().getText().trim();
             String estado = (String)editarServicio.getComboEstado().getSelectedItem();
-            
-            if(tipoServicio.isEmpty() || fecha.isEmpty() || hora.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty()){
-                JOptionPane.showMessageDialog(editarServicio, "Completa todos los campos");
-                return;
-            }
-            int precio = 0;
-            try{
-                precio = Integer.parseInt(precioTexto);
-                if(precio <= 0){
-                    JOptionPane.showMessageDialog(editarServicio, "El precio debe ser mayor a 0");
+
+            try {
+                if(tipoServicio.isEmpty() || fecha.isEmpty() || hora.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty()){ // Validar que todos los campos estén completos
+                    JOptionPane.showMessageDialog(editarServicio, "Completa todos los campos");
                     return;
                 }
-            } catch(NumberFormatException e){
-                JOptionPane.showMessageDialog(editarServicio, "El precio debe ser un número valido");
-                return;
-            }
-            
-            Servicio servicioActualizado = new Servicio(tipoServicio, fecha, hora, descripcion, precio, estado);
-            if(veterinaria.editarServicio(rutCliente, nombreMascota, indiceSeleccionado, servicioActualizado)){
-                JOptionPane.showMessageDialog(editarServicio, "Servicio actualizado correctamente");
-                List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
-                editarServicio.cargarServiciosDeMascota(servicios);
-                editarServicio.limpiarCampos();
-            }
-            else{
-                JOptionPane.showMessageDialog(editarServicio, "Error al editar el servicio");
+
+                int precio = 0; // Convertir y validar precio modificado
+                try{
+                    precio = Integer.parseInt(precioTexto);
+                    validarPrecio(precio); // Aplicar validación de rango para el nuevo precio
+
+                } catch(NumberFormatException e){
+                    JOptionPane.showMessageDialog(editarServicio, "El precio debe ser un número válido", "Error de formato", JOptionPane.ERROR_MESSAGE);
+                    editarServicio.getTxtPrecio().requestFocus();
+                    return;
+                } catch(RangoInvalidoException e){
+                    JOptionPane.showMessageDialog(editarServicio, e.getMessage(), "Error de rango de precio", JOptionPane.ERROR_MESSAGE);
+                    editarServicio.getTxtPrecio().setText("");
+                    editarServicio.getTxtPrecio().requestFocus();
+                    return;
+                }
+                Servicio servicioActualizado = new Servicio(tipoServicio, fecha, hora, descripcion, precio, estado); // Crear servicio actualizado con datos validados
+
+                if(veterinaria.editarServicio(rutCliente, nombreMascota, indiceSeleccionado, servicioActualizado)){ // Intentar guardar cambios en el sistema
+                    JOptionPane.showMessageDialog(editarServicio, "Servicio actualizado correctamente"); // Edición exitosa
+                    List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota); 
+                    editarServicio.cargarServiciosDeMascota(servicios); // Recargar servicios actualizados en la tabla
+                    editarServicio.limpiarCampos(); // Limpiar campos
+                }
+                else{
+                    JOptionPane.showMessageDialog(editarServicio, "Error al editar el servicio");
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(editarServicio, "Error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             return;
         }
@@ -867,18 +1029,27 @@ public class ControladorVeterinaria implements ActionListener {
         //ELIMINAR SERVICIO - BOTÓN BUSCAR CLIENTE
         if(eliminarServicio != null && ae.getSource() == eliminarServicio.getBtnBuscarCliente()){
             String rutCliente = eliminarServicio.getTxtRutCliente().getText().trim();
-            if(rutCliente.isEmpty()){
-                JOptionPane.showMessageDialog(eliminarServicio, "Por favor ingresa RUT");
-                return;
-            }
-            Cliente cliente = veterinaria.buscarClientePorRut(rutCliente);
-            if(cliente != null){
-                eliminarServicio.cargarMascotasDelCliente(cliente);
-                JOptionPane.showMessageDialog(eliminarServicio, "Cliente encontrado");
-            }
-            else{
-                JOptionPane.showMessageDialog(eliminarServicio, "Cliente no encontrado");
-                eliminarServicio.limpiarCampos();
+
+            try { 
+                if(rutCliente.isEmpty()){ // Validar que el campo RUT no esté vacío
+                    JOptionPane.showMessageDialog(eliminarServicio, "Por favor ingresa RUT");
+                    return;
+                }
+                validarFormatoRUT(rutCliente); // Validar formato del RUT
+                Cliente cliente = veterinaria.buscarClientePorRut(rutCliente); // Buscar cliente con RUT válido en el sistema
+
+                if(cliente != null){ // Cliente encontrado
+                    eliminarServicio.cargarMascotasDelCliente(cliente);
+                    JOptionPane.showMessageDialog(eliminarServicio, "Cliente encontrado");
+                }
+                else{
+                    JOptionPane.showMessageDialog(eliminarServicio, "Cliente no encontrado"); // RUT válido pero cliente no existe en el sistema
+                    eliminarServicio.limpiarCampos(); // Limpiar campos
+                }
+
+            } catch (FormatoRUTInvalidoException e) {
+                JOptionPane.showMessageDialog(eliminarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE); // Error de formato de RUT
+                eliminarServicio.limpiarCampos(); // Limpiar campos
             }
             return;
         }
@@ -887,22 +1058,30 @@ public class ControladorVeterinaria implements ActionListener {
         if(eliminarServicio != null && ae.getSource() == eliminarServicio.getBtnBuscarMascota()){
             String rutCliente = eliminarServicio.getTxtRutCliente().getText().trim();
             String nombreMascota = "";
-            
-            if(eliminarServicio.getComboMascotas().getSelectedItem() != null){
-                nombreMascota = eliminarServicio.getComboMascotas().getSelectedItem().toString();
-            }
-            else{
-                JOptionPane.showMessageDialog(eliminarServicio, "Seleccione una mascota");
-                return;
-            }
-            List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
-            if(!servicios.isEmpty()){
-                eliminarServicio.cargarServiciosDeMascota(servicios);
-                JOptionPane.showMessageDialog(eliminarServicio, "Se encontraron " + servicios.size() + " servicios");
-            }
-            else{
-                JOptionPane.showMessageDialog(eliminarServicio, "No se encontraron servicios");
-                eliminarServicio.limpiarCampos();
+
+            try {
+                validarFormatoRUT(rutCliente); // Validar formato del RUT
+                if(eliminarServicio.getComboMascotas().getSelectedItem() != null){ // Verificar que se haya seleccionado una mascota del combo
+                    nombreMascota = eliminarServicio.getComboMascotas().getSelectedItem().toString();
+                }
+                else{
+                    JOptionPane.showMessageDialog(eliminarServicio, "Seleccione una mascota");
+                    return;
+                }
+                List<Servicio> servicios = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota); // Buscar servicios de la mascota
+
+                if(!servicios.isEmpty()){ // Servicios encontrados 
+                    eliminarServicio.cargarServiciosDeMascota(servicios);
+                    JOptionPane.showMessageDialog(eliminarServicio, "Se encontraron " + servicios.size() + " servicios");
+                }
+                else{
+                    JOptionPane.showMessageDialog(eliminarServicio, "No se encontraron servicios"); // No hay servicios para eliminar en esta mascota
+                    eliminarServicio.limpiarCampos(); // Limpiar campos
+                }
+
+            } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
+                JOptionPane.showMessageDialog(eliminarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
+                eliminarServicio.limpiarCampos(); // Limpiar campos
             }
             return;
         }
@@ -914,48 +1093,57 @@ public class ControladorVeterinaria implements ActionListener {
                 JOptionPane.showMessageDialog(eliminarServicio, "Seleccione un servicio");
                 return;
             }
+
             String rutCliente = eliminarServicio.getTxtRutCliente().getText().trim();
             String nombreMascota = eliminarServicio.getComboMascotas().getSelectedItem().toString();
-            DefaultTableModel modelo = (DefaultTableModel) eliminarServicio.getTblServicios().getModel();
-            String tipoServicio = modelo.getValueAt(indiceSeleccionado, 0).toString();
-            String fecha = modelo.getValueAt(indiceSeleccionado, 1).toString();
-            int confirmacion = JOptionPane.showConfirmDialog(
-                eliminarServicio,
-                "¿Está seguro de que desea eliminar el servicio?\n" +     
-                "Tipo: " + tipoServicio + "\n" +
-                "Fecha: " + fecha + "\n" +
-                "Esta acción no se puede deshacer.",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE
-            );
-            if(confirmacion == JOptionPane.YES_OPTION){
-                if(veterinaria.eliminarServicio(rutCliente, nombreMascota, indiceSeleccionado)){
-                    JOptionPane.showMessageDialog(eliminarServicio, "Servicio eliminado exitosamente");
-                    
-                    Cliente cliente = veterinaria.buscarClientePorRut(rutCliente);
-                    if(cliente != null){
-                        int serviciosRestantes = 0;
-                        for(Mascota mascota : cliente.getMascotas()){
-                            serviciosRestantes += mascota.getServicios().size();
+
+            try { 
+                validarFormatoRUT(rutCliente); // Validar formato del RUT
+                DefaultTableModel modelo = (DefaultTableModel) eliminarServicio.getTblServicios().getModel();
+                String tipoServicio = modelo.getValueAt(indiceSeleccionado, 0).toString();
+                String fecha = modelo.getValueAt(indiceSeleccionado, 1).toString();
+                int confirmacion = JOptionPane.showConfirmDialog(
+                    eliminarServicio,
+                    "¿Está seguro de que desea eliminar el servicio?\n" +     
+                    "Tipo: " + tipoServicio + "\n" +
+                    "Fecha: " + fecha + "\n" +
+                    "Esta acción no se puede deshacer.",
+                    "Confirmar eliminación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+                );
+
+                if(confirmacion == JOptionPane.YES_OPTION){
+                    if(veterinaria.eliminarServicio(rutCliente, nombreMascota, indiceSeleccionado)){
+                        JOptionPane.showMessageDialog(eliminarServicio, "Servicio eliminado exitosamente");
+                        Cliente cliente = veterinaria.buscarClientePorRut(rutCliente);
+                        if(cliente != null){
+                            int serviciosRestantes = 0;
+                            for(Mascota mascota : cliente.getMascotas()){
+                                serviciosRestantes += mascota.getServicios().size();
+                            }
+                            if(cliente instanceof ClienteFrecuente && serviciosRestantes < 7){
+                                veterinaria.revertirAClienteRegular(rutCliente);
+                                JOptionPane.showMessageDialog(eliminarServicio, 
+                                    "Advertencia: Cliente frecuente ahora tiene solo " + serviciosRestantes + " servicios");
+                            }
                         }
-                        if(cliente instanceof ClienteFrecuente && serviciosRestantes < 7){
-                            veterinaria.revertirAClienteRegular(rutCliente);
-                            JOptionPane.showMessageDialog(eliminarServicio, "Advertencia: Cliente frecuente ahora tiene solo" + serviciosRestantes + "servicios");
+
+                        List<Servicio> serviciosActualizados = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
+                        eliminarServicio.cargarServiciosDeMascota(serviciosActualizados);
+                        eliminarServicio.limpiarCampos(); // Limpiar campos
+
+                        if(listarClientesFrecuentes != null && listarClientesFrecuentes.isVisible()){
+                            listarClientesFrecuentes.cargarDatos();
                         }
                     }
-                    
-                    List<Servicio> serviciosActualizados = veterinaria.buscarServiciosPorMascota(rutCliente, nombreMascota);
-                    eliminarServicio.cargarServiciosDeMascota(serviciosActualizados);
-                    eliminarServicio.limpiarCampos();
-                    
-                    if(listarClientesFrecuentes != null && listarClientesFrecuentes.isVisible()){
-                        listarClientesFrecuentes.cargarDatos();
+                    else{
+                        JOptionPane.showMessageDialog(eliminarServicio, "Error al eliminar el servicio");
                     }
                 }
-                else{
-                    JOptionPane.showMessageDialog(eliminarServicio, "Errora al eliminar el servicio");
-                }
+
+            } catch (FormatoRUTInvalidoException e) {
+                JOptionPane.showMessageDialog(eliminarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
             }
             return;
         }
@@ -1068,6 +1256,48 @@ public class ControladorVeterinaria implements ActionListener {
             if(filaSeleccionada >= 0){
                 eliminarServicio.mostrarServicioSeleccionado(filaSeleccionada);
             }
+        }
+    }
+    
+//============================EXCEPTIONS========================================
+    
+    private void validarFormatoRUT(String rut) throws FormatoRUTInvalidoException {
+        if (rut == null || rut.trim().isEmpty()) {
+            throw new FormatoRUTInvalidoException("El RUT no puede estar vacío");
+        }
+    
+        // Patrón para XX.XXX.XXX-X o XXXXXXXX-X
+        if (!rut.matches("\\d{1,2}\\.\\d{3}\\.\\d{3}-[\\dkK]") && 
+            !rut.matches("\\d{7,8}-[\\dkK]")) {
+            throw new FormatoRUTInvalidoException("El formato del RUT debe ser XX.XXX.XXX-X o XXXXXXXX-X");
+        }
+    }
+    
+    private void validarEdad(int edad) throws RangoInvalidoException {
+        if (edad <= 0) {
+            throw new RangoInvalidoException("La edad debe ser mayor a 0");
+        }
+        if (edad > 50) {
+            throw new RangoInvalidoException("La edad ingresada parece demasiado alta para una mascota");
+        }
+    }
+    
+    private void validarPrecio(int precio) throws RangoInvalidoException {
+        if (precio <= 0) {
+            throw new RangoInvalidoException("El precio debe ser mayor a 0");
+        }
+        if (precio > 1000000) {
+            throw new RangoInvalidoException("El precio ingresado parece demasiado alto");
+        }
+    }
+
+    private void validarFormatoTelefono(String telefono) throws FormatoTelefonoInvalidoException {
+        if (telefono == null || telefono.trim().isEmpty()) {
+            throw new FormatoTelefonoInvalidoException("El teléfono no puede estar vacío");
+        }
+        // Formato: +569XXXXXXXX o 9XXXXXXXX
+        if (!telefono.matches("\\+569\\d{8}") && !telefono.matches("9\\d{8}")) {
+            throw new FormatoTelefonoInvalidoException("El formato del teléfono debe ser +569XXXXXXXX o 9XXXXXXXX");
         }
     }
 }
