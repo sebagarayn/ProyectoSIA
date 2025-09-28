@@ -62,8 +62,8 @@ public class VentanaMain extends javax.swing.JFrame {
     public javax.swing.JMenuItem getJMenuItemGenerarReporte() { //Para el reporte txt y html
         return jMenuItemGenerarReporte;
     }
-    public javax.swing.JMenuItem getjMenuItemListarUmbral() {
-        return jMenuItemListarUmbral;
+    public javax.swing.JMenuItem getjMenuItemAnalisisServicios() {
+        return jMenuItemAnalisisServicios;
     }
          
     //MENU SALIR
@@ -112,7 +112,7 @@ public class VentanaMain extends javax.swing.JFrame {
         jMenuItemListarClientesFrecuentes = new javax.swing.JMenuItem();
         jMenuItemGenerarReporte = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
-        jMenuItemListarUmbral = new javax.swing.JMenuItem();
+        jMenuItemAnalisisServicios = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItemSalir = new javax.swing.JMenuItem();
 
@@ -192,8 +192,8 @@ public class VentanaMain extends javax.swing.JFrame {
 
         jMenu6.setText("Extras");
 
-        jMenuItemListarUmbral.setText("Listar Umbral");
-        jMenu6.add(jMenuItemListarUmbral);
+        jMenuItemAnalisisServicios.setText("Analisis Servicios");
+        jMenu6.add(jMenuItemAnalisisServicios);
 
         jMenuBar1.add(jMenu6);
 
@@ -231,6 +231,7 @@ public class VentanaMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemAgregarCliente;
     private javax.swing.JMenuItem jMenuItemAgregarMascota;
     private javax.swing.JMenuItem jMenuItemAgregarServicio;
+    private javax.swing.JMenuItem jMenuItemAnalisisServicios;
     private javax.swing.JMenuItem jMenuItemBuscarCliente;
     private javax.swing.JMenuItem jMenuItemBuscarMascota;
     private javax.swing.JMenuItem jMenuItemBuscarServicio;
@@ -245,7 +246,6 @@ public class VentanaMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemListarClientesFrecuentes;
     private javax.swing.JMenuItem jMenuItemListarMascotas;
     private javax.swing.JMenuItem jMenuItemListarServicios;
-    private javax.swing.JMenuItem jMenuItemListarUmbral;
     private javax.swing.JMenuItem jMenuItemSalir;
     // End of variables declaration//GEN-END:variables
 }

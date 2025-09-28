@@ -122,9 +122,9 @@
             <Property name="text" type="java.lang.String" value="Extras"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemListarUmbral">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAnalisisServicios">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Listar Umbral"/>
+                <Property name="text" type="java.lang.String" value="Analisis Servicios"/>
               </Properties>
             </MenuItem>
           </SubComponents>

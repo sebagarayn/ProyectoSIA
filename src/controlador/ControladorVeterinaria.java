@@ -40,7 +40,7 @@ public class ControladorVeterinaria implements ActionListener {
     private VentanaListarMascotas listarMascotas;
     private VentanaListarServicios listarServicios;
     private VentanaListarClientesFrecuentes listarClientesFrecuentes;
-    private VentanaListarUmbral listarUmbral;
+    private VentanaAnalisisServicios listarUmbral;
     
     public void iniciar() {
         veterinaria = new Veterinaria(); //Iniciar veterinaria
@@ -75,7 +75,7 @@ public class ControladorVeterinaria implements ActionListener {
         main.getjMenuItemListarServicios().addActionListener(this);
         main.getjMenuItemListarClientesFrecuentes().addActionListener(this);
         main.getJMenuItemGenerarReporte().addActionListener(this);
-        main.getjMenuItemListarUmbral().addActionListener(this);
+        main.getjMenuItemAnalisisServicios().addActionListener(this);
         
         //SALIR
         main.getjMenuItemSalir().addActionListener(this);
@@ -1025,10 +1025,12 @@ public class ControladorVeterinaria implements ActionListener {
         }
         
         //FUNCION UMBRAL
-        if (ae.getSource() == main.getjMenuItemListarUmbral()) {
-            VentanaListarUmbral ventanaUmbral = new VentanaListarUmbral(veterinaria);
-            ventanaUmbral.setVisible(true);
+        if (ae.getSource() == main.getjMenuItemAnalisisServicios()) {
+            VentanaAnalisisServicios ventanaAnalisis = new VentanaAnalisisServicios();
+            ControladorAnalisisServicios controladorAnalisis = new ControladorAnalisisServicios(veterinaria, ventanaAnalisis);
+            ventanaAnalisis.setVisible(true);
         }
+
 
 //===============================  MENU SALIR  =================================
         

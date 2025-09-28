@@ -1,7 +1,6 @@
 //Rev.24-09
 package modelo;
-import exception.UmbralNegativoException;
-import exception.ListaClientesVaciaException;
+import exception.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -291,19 +290,21 @@ public class Veterinaria {
         return false;
     }
     
+//=============================  FUNCION ESPECIAL  =============================
+    
     public List<Servicio> serviciosConCostoMayorA(int umbral) 
-        throws UmbralNegativoException, ListaClientesVaciaException {
+        throws RangoInvalidoException, ListaClientesVaciaException {
 
         if (umbral < 0) {
-            throw new UmbralNegativoException("El umbral no puede ser negativo.");
+            throw new RangoInvalidoException("El rango no puede ser negativo");
         }
         if (listaClientes.isEmpty()) {
-            throw new ListaClientesVaciaException("No hay clientes registrados.");
+            throw new ListaClientesVaciaException("No hay clientes registrados");
         }
 
         List<Servicio> resultado = new ArrayList<>();
 
-    // Recorrer clientes por Ã­ndice
+    // Recorrer clientes por I­ndice
         for (int i = 0; i < listaClientes.size(); i++) {
             Cliente c = listaClientes.get(i);
 
@@ -321,8 +322,114 @@ public class Veterinaria {
                 }
             }
         }
-
         return resultado;
+    }
+    
+    public List<Servicio> filtroAvanzadoServicios(double precioMinimo, double precioMaximo, boolean soloClientesFrecuentes, boolean soloMascotasGeriatricas, boolean soloServiciosUrgencia)
+        throws ListaClientesVaciaException, RangoInvalidoException{
+        
+        if(listaClientes.isEmpty()){
+            throw new ListaClientesVaciaException("No hay clientes registrados");
+        }
+        if(precioMinimo < 0 || precioMaximo < 0){
+            throw new RangoInvalidoException("Los precios no pueden ser negativos");
+        }
+        if(precioMinimo > precioMaximo){
+            throw new RangoInvalidoException("El precio mínimo no puede ser mayor al máximo");
+        }
+        List<Servicio> resultado = new ArrayList<>();
+        
+        for(int i = 0 ; i < listaClientes.size() ; i ++){
+            Cliente cliente = listaClientes.get(i);
+            if (soloClientesFrecuentes && !(cliente instanceof ClienteFrecuente)) {
+                continue;
+            }
+            for (int j = 0; j < cliente.getMascotas().size(); j++) {
+                Mascota mascota = cliente.getMascotas().get(j);
+                if (soloMascotasGeriatricas && !(mascota instanceof MascotaGeriatrica)) {
+                    continue;
+                }
+                for (int k = 0; k < mascota.getServicios().size(); k++) {
+                    Servicio servicio = mascota.getServicios().get(k);
+                    if (soloServiciosUrgencia && !(servicio instanceof ServicioUrgencia)) {
+                        continue;
+                    }
+                    if (servicio.getPrecio() >= precioMinimo && servicio.getPrecio() <= precioMaximo) {
+                        resultado.add(servicio);
+                    }
+                }
+            }
+        }
+        return resultado;
+    }
+    
+    public double[] calcularEstadisticas(List<Servicio> servicios){
+        if(servicios.isEmpty()){
+            return new double[]{0,0,0}; //Promedio, Total, Cantidad
+        }
+        double suma = 0;
+        for(Servicio s : servicios){
+            suma += s.getPrecio();
+        }
+        double promedio = suma / servicios.size();
+        return new double[] {promedio, suma, servicios.size()};
+    }
+    
+    public int[] contarTipos(List<Servicio> servicios){ //Para contar tipos especificos en una lista de servicios
+        int clientesFrecuentes = 0;
+        int mascotasGeriatricas = 0;
+        int serviciosUrgencia = 0;
+        
+        //Para buscar al cliente y mascota de este servicio
+        for(Servicio s : servicios){
+            for(Cliente c : listaClientes){
+                for(Mascota m : c.getMascotas()){
+                    if(m.getServicios().contains(s)){
+                        if (c instanceof ClienteFrecuente){
+                            clientesFrecuentes ++;
+                        }  
+                        if(m instanceof MascotaGeriatrica){
+                            mascotasGeriatricas ++;
+                        }
+                        if(s instanceof ServicioUrgencia){
+                            serviciosUrgencia ++;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return new int[] {clientesFrecuentes, mascotasGeriatricas, serviciosUrgencia};
+    }
+    
+    public List<Cliente> obtenerClientesUnicos(List<Servicio> servicios){
+        List<Cliente> clientesUnicos = new ArrayList<>();
+        for (Servicio s : servicios) {
+            for (Cliente c : listaClientes) {
+                for (Mascota m : c.getMascotas()) {
+                    if (m.getServicios().contains(s) && !clientesUnicos.contains(c)) {
+                        clientesUnicos.add(c);
+                        break;
+                    }
+                }
+            }
+        }
+        return clientesUnicos;
+    }
+    
+    public List<Mascota> obtenerMascotasUnicas(List<Servicio> servicios){
+        List<Mascota> mascotasUnicas = new ArrayList<>();
+        for (Servicio s : servicios) {
+            for (Cliente c : listaClientes) {
+                for (Mascota m : c.getMascotas()) {
+                    if (m.getServicios().contains(s) && !mascotasUnicas.contains(m)) {
+                        mascotasUnicas.add(m);
+                        break;
+                    }
+                }
+            }
+        } 
+        return mascotasUnicas;
     }
     
 //==============================================================================
