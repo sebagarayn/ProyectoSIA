@@ -25,7 +25,8 @@ public class VentanaBuscarMascota extends javax.swing.JFrame {
         txtNombreMascota = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Buscar Mascota");
 
         btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -41,11 +42,15 @@ public class VentanaBuscarMascota extends javax.swing.JFrame {
             }
         });
 
-        txtRutDueno.setText("jTextField1");
+        txtRutDueno.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtRutDueno.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtRutDueno.setPreferredSize(new java.awt.Dimension(80, 20));
 
         jLabel1.setText("Rut del Dueño");
 
-        txtNombreMascota.setText("jTextField1");
+        txtNombreMascota.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtNombreMascota.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtNombreMascota.setPreferredSize(new java.awt.Dimension(80, 20));
 
         jLabel2.setText("Nombre Mascota");
 
@@ -81,7 +86,7 @@ public class VentanaBuscarMascota extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtNombreMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 98, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBuscar)
                     .addComponent(btnCancelar))

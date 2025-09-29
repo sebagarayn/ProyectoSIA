@@ -179,6 +179,7 @@ public class VentanaAnalisisServicios extends javax.swing.JFrame {
         btnCerrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Analisis Servicios");
 
         jLabel1.setText("Precio mínimo:");
 

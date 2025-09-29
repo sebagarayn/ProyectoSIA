@@ -62,7 +62,7 @@ public class Cliente {
         return null;
     }
     
-    public boolean eliminarMascota(String nombreMascota){
+    public boolean eliminarMascota(String nombreMascota){ //Para eliminar mascotas
         for(Mascota mascota : mascotas){
             if(mascota.getNombre().equalsIgnoreCase(nombreMascota)){
                 mascotas.remove(mascota);
@@ -72,7 +72,7 @@ public class Cliente {
         return false;
     }
     
-    public boolean editarMascota(String nombre, String tipo, String raza, int edad){
+    public boolean editarMascota(String nombre, String tipo, String raza, int edad){ //Para poder editar los datos de una mascota
         for(Mascota mascota : mascotas){
             if(mascota.getNombre().equalsIgnoreCase(nombre)){
                 mascota.setTipo(tipo);

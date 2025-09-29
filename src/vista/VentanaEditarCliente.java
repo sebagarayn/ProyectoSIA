@@ -62,31 +62,39 @@ public class VentanaEditarCliente extends javax.swing.JFrame {
 
         jLabel4.setText("Dirección");
 
-        txtRut.setText("jTextField1");
+        txtRut.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtRut.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtRut.setPreferredSize(new java.awt.Dimension(80, 20));
         txtRut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtRutActionPerformed(evt);
             }
         });
 
-        txtNombre.setText("jTextField1");
         txtNombre.setEnabled(false);
+        txtNombre.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtNombre.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtNombre.setPreferredSize(new java.awt.Dimension(80, 20));
         txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNombreActionPerformed(evt);
             }
         });
 
-        txtTelefono.setText("jTextField1");
         txtTelefono.setEnabled(false);
+        txtTelefono.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtTelefono.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtTelefono.setPreferredSize(new java.awt.Dimension(80, 20));
         txtTelefono.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtTelefonoActionPerformed(evt);
             }
         });
 
-        txtDireccion.setText("jTextField1");
         txtDireccion.setEnabled(false);
+        txtDireccion.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtDireccion.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtDireccion.setPreferredSize(new java.awt.Dimension(80, 20));
         txtDireccion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDireccionActionPerformed(evt);
@@ -122,18 +130,18 @@ public class VentanaEditarCliente extends javax.swing.JFrame {
                                 .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(79, 79, 79)
-                        .addComponent(btnBuscar)
-                        .addContainerGap(78, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnGuardar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCancelar)
-                        .addGap(19, 19, 19))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(79, 79, 79)
+                                .addComponent(btnBuscar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnGuardar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnCancelar)))
+                        .addContainerGap(69, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -155,7 +163,7 @@ public class VentanaEditarCliente extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
                     .addComponent(btnCancelar))

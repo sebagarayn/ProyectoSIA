@@ -108,7 +108,9 @@ public class VentanaBuscarServicio extends javax.swing.JFrame {
 
         lblRutCliente.setText("RUT Cliente");
 
-        txtRutCliente.setPreferredSize(new java.awt.Dimension(120, 25));
+        txtRutCliente.setMaximumSize(new java.awt.Dimension(120, 20));
+        txtRutCliente.setMinimumSize(new java.awt.Dimension(120, 20));
+        txtRutCliente.setPreferredSize(new java.awt.Dimension(120, 20));
 
         btnBuscarCliente.setText("Buscar Cliente");
 
@@ -203,7 +205,7 @@ public class VentanaBuscarServicio extends javax.swing.JFrame {
                 .addComponent(scrollServicios, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnCancelar)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         pack();

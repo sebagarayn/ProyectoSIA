@@ -168,7 +168,8 @@ public class VentanaEditarServicio extends javax.swing.JFrame {
         comboEstado = new javax.swing.JComboBox<>();
         txtHora = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Editar Servicio");
 
         jLabel1.setText("RUT Cliente:");
 
@@ -177,9 +178,14 @@ public class VentanaEditarServicio extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setText("EDITAR SERVICIO");
 
-        txtRutCliente.setText("jTextField1");
+        txtRutCliente.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtRutCliente.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtRutCliente.setPreferredSize(new java.awt.Dimension(80, 20));
 
         comboMascotas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboMascotas.setMaximumSize(new java.awt.Dimension(80, 20));
+        comboMascotas.setMinimumSize(new java.awt.Dimension(80, 20));
+        comboMascotas.setPreferredSize(new java.awt.Dimension(80, 20));
 
         btnBuscarCliente.setText("Buscar Cliente");
 

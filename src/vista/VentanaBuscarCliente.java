@@ -21,7 +21,8 @@ public class VentanaBuscarCliente extends javax.swing.JFrame {
         jButtonCancelar = new javax.swing.JButton();
         jTextFieldRut = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Buscar Cliente");
 
         jLabel1.setText("Rut del Dueño");
 
@@ -29,7 +30,9 @@ public class VentanaBuscarCliente extends javax.swing.JFrame {
 
         jButtonCancelar.setText("Cancelar");
 
-        jTextFieldRut.setText("jTextField1");
+        jTextFieldRut.setMaximumSize(new java.awt.Dimension(80, 20));
+        jTextFieldRut.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextFieldRut.setPreferredSize(new java.awt.Dimension(80, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -56,7 +59,7 @@ public class VentanaBuscarCliente extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jTextFieldRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonBuscar)
                     .addComponent(jButtonCancelar))

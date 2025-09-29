@@ -70,19 +70,29 @@ public class VentanaEliminarCliente extends javax.swing.JFrame {
 
         jLabel5.setText("Mascotas");
 
-        txtRut.setText("jTextField1");
+        txtRut.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtRut.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtRut.setPreferredSize(new java.awt.Dimension(80, 20));
 
         txtNombre.setEditable(false);
-        txtNombre.setText("jTextField1");
+        txtNombre.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtNombre.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtNombre.setPreferredSize(new java.awt.Dimension(80, 20));
 
         txtTelefono.setEditable(false);
-        txtTelefono.setText("jTextField1");
+        txtTelefono.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtTelefono.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtTelefono.setPreferredSize(new java.awt.Dimension(80, 20));
 
         txtNumMascotas.setEditable(false);
-        txtNumMascotas.setText("jTextField1");
+        txtNumMascotas.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtNumMascotas.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtNumMascotas.setPreferredSize(new java.awt.Dimension(80, 20));
 
         txtDireccion.setEditable(false);
-        txtDireccion.setText("jTextField1");
+        txtDireccion.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtDireccion.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtDireccion.setPreferredSize(new java.awt.Dimension(80, 20));
 
         btnBuscar.setText("Buscar");
 
@@ -128,7 +138,7 @@ public class VentanaEliminarCliente extends javax.swing.JFrame {
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
                                 .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                                 .addComponent(btnBuscar)))
                         .addGap(56, 56, 56))))
         );
@@ -160,7 +170,7 @@ public class VentanaEliminarCliente extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar)
                     .addComponent(btnEliminar))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         pack();

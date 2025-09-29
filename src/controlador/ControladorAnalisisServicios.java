@@ -1,5 +1,9 @@
 package controlador;
 
+/* Controlador que conecta la vista VentanaAnalisisServicios con el modelo Veterinaria.
+Permite buscar servicios según filtros, limpiar los filtros, mostrar estadísticas
+y cerrar la ventana.  Sigue el patrón MVC.*/
+
 import modelo.*;
 import vista.VentanaAnalisisServicios;
 import exception.RangoInvalidoException;
@@ -17,6 +21,7 @@ public class ControladorAnalisisServicios {
         this.vista = vista;
         configurarEventos();
     }
+    /*Asocia los botones/acciones de la vista con métodos del controlador.*/
     
     private void configurarEventos() {
         vista.setBuscarListener(e -> buscarServicios());
@@ -24,6 +29,8 @@ public class ControladorAnalisisServicios {
         vista.setEstadisticasListener(e -> mostrarEstadisticas());
         vista.setCerrarListener(e -> cerrarVentana());
     }
+    /*Ejecuta la búsqueda de servicios según los filtros ingresados en la vista.
+    Valida entradas, llama al modelo y muestra los resultados.*/
     
     private void buscarServicios() {
         try {
@@ -36,7 +43,7 @@ public class ControladorAnalisisServicios {
             
             // Validar rango
             validarRangoPrecio(precioMin, precioMax);
-            
+            // Pide al modelo la lista filtrada de servicios
             List<Servicio> servicios = modelo.filtroAvanzadoServicios(
                 precioMin, precioMax, soloFrecuentes, soloGeriatricas, soloUrgencia
             );
@@ -44,12 +51,16 @@ public class ControladorAnalisisServicios {
             vista.mostrarResultados(servicios, modelo);
             
         } catch (NumberFormatException ex) {
+            // Cuando el usuario ingresa texto no numérico en los campos de precio
             vista.mostrarError("Por favor ingrese valores numéricos válidos");
         } catch (RangoInvalidoException ex) {
+            // Rango de precios incorrecto
             vista.mostrarError(ex.getMessage());
         } catch (ListaClientesVaciaException ex){
+            // No hay clientes cargados en el sistema
             vista.mostrarError(ex.getMessage());
         } catch (Exception ex){
+            // Cualquier otro error no previsto
             vista.mostrarError("Error inesperado durante el análisis: " + ex.getMessage());
         }
     }
@@ -57,20 +68,23 @@ public class ControladorAnalisisServicios {
     private void limpiarFiltros() {
         vista.limpiarCampos();
     }
-    
+    /* Calcula y muestra estadísticas basadas en los servicios actualmente mostrados.
+    Incluye totales, promedios, distribución por tipo, etc.*/ 
     private void mostrarEstadisticas() {
         
         try {
+            // Obtiene los servicios que la vista tiene cargados en este momento
             List<Servicio> servicios = vista.getServiciosMostrados();
             if (servicios == null || servicios.isEmpty()) {
                 vista.mostrarError("No hay datos para mostrar estadísticas.\nRealice una búsqueda primero.");
                 return;
             }
+            // Llama al modelo para calcular distintos datos estadísticos
             double[] stats = modelo.calcularEstadisticas(servicios);
             int[] tipos = modelo.contarTipos(servicios);
             List<Cliente> clientesUnicos = modelo.obtenerClientesUnicos(servicios);
             List<Mascota> mascotasUnicas = modelo.obtenerMascotasUnicas(servicios);
-        
+            // Construye un texto con los resultados
             StringBuilder mensaje = new StringBuilder();
             mensaje.append("=== ESTADÍSTICAS ===\n\n");
             mensaje.append(String.format("Total servicios: %d\n", servicios.size()));
@@ -85,6 +99,7 @@ public class ControladorAnalisisServicios {
         
             vista.mostrarEstadisticas(mensaje.toString());
         }catch(Exception ex){
+            // Cualquier error durante el cálculo de estadísticas
             vista.mostrarError("Error al calcular estadísticas: " + ex.getMessage());
         }
     }   

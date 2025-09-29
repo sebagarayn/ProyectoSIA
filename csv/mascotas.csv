@@ -1,3 +1,5 @@
 rut_dueno,nombre,tipo,raza,edad,es_geriatrica,fecha_inicio_geriatria
+19000000-7,Mica,Perro,Mezcla,7,false,
 20911143-8,Ahri,Perro,Pug,9,true,01-01-2020
 20911143-8,Mia,Perro,Mezcla,1,false,
+20911143-8,Mico,Perro,Mezcla,5,false,

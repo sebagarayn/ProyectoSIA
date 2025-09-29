@@ -13,12 +13,12 @@ public class ClienteFrecuente extends Cliente {
     }
     
     @Override
-    public String obtenerTipoCliente(){
+    public String obtenerTipoCliente(){ //Para obtener el tipos de cliente
         return "Cliente Frecuente (" + numeroVisitasAnuales + " visitas anuales)";
     }
     
     @Override
-    public double calcularDescuento(){
+    public double calcularDescuento(){ //Para calcular el descuento segun el numero de visitas
         if(numeroVisitasAnuales >= 12){
             return 0.18; //Descuento del 18%
         }
@@ -32,7 +32,7 @@ public class ClienteFrecuente extends Cliente {
     }
     
     @Override
-    public String obtenerBeneficios(){
+    public String obtenerBeneficios(){ //Se obtiene los beneficios de un cliente frecuente
         String beneficios = "Beneficios Cliente Frecuente: ";
         beneficios += "- Descuento del " + (calcularDescuento() * 100) + "%";
         beneficios += "- Consulta telefónica gratuita";
@@ -43,28 +43,28 @@ public class ClienteFrecuente extends Cliente {
     }
     
 //================GET/SET===================
-    public int getNumeroVisitasAnuales() {
+    public int getNumeroVisitasAnuales() { ///Para obtener el numero de visitas anuales
         return numeroVisitasAnuales;
     }
     
-    public void setNumeroVisitasAnuales(int visitas){
+    public void setNumeroVisitasAnuales(int visitas){ //Para settear el numero de visitas anuales
         this.numeroVisitasAnuales = visitas;
         this.tienePlanFidelidad = visitas >= 6;
     }
     
-    public String getFechaUltimaVisita() {
+    public String getFechaUltimaVisita() { //Para obtener la fecha de la ultima visita
         return fechaUltimaVisita;
     }
     
-    public void setFechaUltimaVisita(String fecha){
+    public void setFechaUltimaVisita(String fecha){ //Para settear la fecha de la ultima visita
         this.fechaUltimaVisita = fecha;
     }
     
-    public boolean isTienePlanFidelidad() {
+    public boolean isTienePlanFidelidad() { //Para determinar si el cliente tiene plan de fidelidad (Frecuente)
         return tienePlanFidelidad;
     }
     
-    public void registrarNuevaVisita(String fecha){
+    public void registrarNuevaVisita(String fecha){ //Para registrar una nueva visita
         this.fechaUltimaVisita = fecha;
         this.numeroVisitasAnuales ++;
         this.tienePlanFidelidad = numeroVisitasAnuales >= 6;

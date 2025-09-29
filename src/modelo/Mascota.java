@@ -57,7 +57,7 @@ public class Mascota {
         servicios.add(new Servicio(tipoServicio, fecha, hora, descripcion, precio, estado));
     }
     
-    public boolean editarServicio(Servicio servicioOriginal, Servicio servicioNuevo){
+    public boolean editarServicio(Servicio servicioOriginal, Servicio servicioNuevo){ //Para editar un servicio
         for(int i = 0 ; i < servicios.size() ; i ++){
             Servicio servicio = servicios.get(i);
             if(servicio.equals(servicioOriginal)){
@@ -76,7 +76,7 @@ public class Mascota {
         return false;
     }
     
-    public int obtenerIndiceServicio(Servicio servicio){
+    public int obtenerIndiceServicio(Servicio servicio){ //Para obtener el indice de un servicio en la lista de ellos
         for(int i = 0 ; i < servicios.size() ; i ++){
             Servicio s = servicios.get(i);
             if (s.getTipoServicio().equals(servicio.getTipoServicio()) &&
@@ -91,7 +91,7 @@ public class Mascota {
         return -1;
     }
     
-    public boolean eliminarServicio(int indice) {
+    public boolean eliminarServicio(int indice) { //Para eliminar un servicio, segun su indice
         if(indice >= 0 && indice < servicios.size()){
             servicios.remove(indice);
             return true;

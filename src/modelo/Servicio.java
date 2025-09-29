@@ -37,15 +37,15 @@ public class Servicio {
     public void setEstado(String estado) {this.estado = estado;}   
     
 //==============================================================================
-    public String obtenerTipoServicio(){
+    public String obtenerTipoServicio(){ //Se obtiene el tipo de servicio para regulares
         return tipoServicio + " (Servicio Regular)";
     }
     
-    public int calcularPrecioFinal(){
+    public int calcularPrecioFinal(){ //Se calcula el precio final, en este caso sin cambios
         return precio;
     }
     
-    public String obtenerInstruccionesEspeciales(){
+    public String obtenerInstruccionesEspeciales(){ //Se obtienen las instrucciones, en este caso estandar
         return "Seguir protocolo estándar";
     }
 }

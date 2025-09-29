@@ -1,9 +1,7 @@
-20911143-8,Ahri,Baño,25-09-2025,12:00,Baño,10800,Pendiente,false,,,
-20911143-8,Ahri,jTextField3,jTextField4,jTextField1,jTextField5,4500,Realizado,false,,,
-20911143-8,Ahri,jTextField3,20-09-2025,jTextField1,jTextField5,4500,Pendiente,false,,,
-20911143-8,Ahri,jTextField3,20-09-2025,jTextField1,jTextField5,2090,Pendiente,false,,,
-20911143-8,Ahri,jTextField3,10-10-2020,jTextField1,jTextField5,13500,Pendiente,false,,,
-20911143-8,Ahri,jTextField3,10-10-2022,jTextField1,jTextField5,10800,Pendiente,false,,,
-20911143-8,Ahri,jTextField3,20-12-2020,jTextField1,jTextField5,10800,Pendiente,false,,,
-20911143-8,Ahri,jTextField3,20-10-2020,jTextField1,jTextField5,9767,Pendiente,true,1,Motivo Urgencia,false
-20911143-8,Ahri,jTextField3,jTextField4,jTextField1,jTextField5,1776,Pendiente,true,1,Motivo Urgencia,false
+rutDueno,nombreMascota,servicio,fechaServicio,horaServicio,descripcion,precio,estado,esUrgencia,nivelUrgencia,motivoUrgencia,requiereInmediata
+19000000-7,Mica,Baño,28-09-2025,12:00,Hay que bañarla,10000,Realizado,false,,,
+20911143-8,Ahri,Paseo,28-09-1988,12:00,Si,4500,Pendiente,false,,,
+20911143-8,Mia,Limpieza,28-09-2025,12:00,Si,10000,Pendiente,false,,,
+20911143-8,Mia,Limpieza,28-09-2025,20:14,Limpieza,8800,Pendiente,true,5,Es necesario,true
+20911143-8,Mico,Vacuna,28-09-2025,12:00,Si,20000,Pendiente,false,,,
+20911143-8,Mico,Limpieza,28-09-2025,20:12,Hay que limpiarlo,8800,Pendiente,true,5,Es necesario,true

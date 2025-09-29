@@ -31,9 +31,12 @@ public class VentanaAgregarCliente extends javax.swing.JFrame {
         jButtonAgregar = new javax.swing.JButton();
         jButtonCancelar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Agregar Cliente");
 
-        jTextFieldRut.setText("jTextField1");
+        jTextFieldRut.setMaximumSize(new java.awt.Dimension(80, 20));
+        jTextFieldRut.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextFieldRut.setPreferredSize(new java.awt.Dimension(80, 20));
 
         jLabel1.setText("Nombre");
 
@@ -43,11 +46,17 @@ public class VentanaAgregarCliente extends javax.swing.JFrame {
 
         jLabel4.setText("Dirección");
 
-        jTextFieldNombre.setText("jTextField1");
+        jTextFieldNombre.setMaximumSize(new java.awt.Dimension(80, 20));
+        jTextFieldNombre.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextFieldNombre.setPreferredSize(new java.awt.Dimension(80, 20));
 
-        jTextFieldTelefono.setText("jTextField1");
+        jTextFieldTelefono.setMaximumSize(new java.awt.Dimension(80, 20));
+        jTextFieldTelefono.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextFieldTelefono.setPreferredSize(new java.awt.Dimension(80, 20));
 
-        jTextDireccion.setText("jTextField1");
+        jTextDireccion.setMaximumSize(new java.awt.Dimension(80, 20));
+        jTextDireccion.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextDireccion.setPreferredSize(new java.awt.Dimension(80, 20));
 
         jButtonAgregar.setText("Agregar");
 
@@ -104,7 +113,7 @@ public class VentanaAgregarCliente extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jTextDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAgregar)
                     .addComponent(jButtonCancelar))

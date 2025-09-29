@@ -13,7 +13,7 @@ public class MascotaGeriatrica extends Mascota {
     }
     
     @Override
-    public String obtenerCuidadosEspeciales(){
+    public String obtenerCuidadosEspeciales(){ //Se obtienen los cuidados especiales de una mascota geriatrica
         String cuidados = "Cuidados geriátricos especiales: ";
         cuidados += "- Chequeos cardíacos regulares, ";
         cuidados += "- Dieta senior baja en sodio, ";
@@ -23,12 +23,12 @@ public class MascotaGeriatrica extends Mascota {
     }
     
     @Override
-    public int obtenerFrecuenciaVisitas(){
+    public int obtenerFrecuenciaVisitas(){ //Se obtiene la frecuencia de visitas, que debiera ser de 3, en vez de 6 (regular)
         return 3;
     }
     
     @Override
-    public String obtenerRecomendaciones() {
+    public String obtenerRecomendaciones() { //Obtener las recomendaciones relacionadas a las mascotas geriatricas
         String recomendaciones = "Recomendaciones geriátricas: ";
         recomendaciones += "- Análisis de sangre trimestral, ";
         recomendaciones += "- Suplementos articulares, ";
@@ -43,23 +43,23 @@ public class MascotaGeriatrica extends Mascota {
     }
     
     @Override
-    public double calcularFactorPrecio() {
+    public double calcularFactorPrecio() { //Se calcular el factor de precio, en este caso un descuento para las mascotas geriatricas
         return 0.90; //10% de descuento
     }
     
-    public boolean isRequiereAnalisisRegulares(){
+    public boolean isRequiereAnalisisRegulares(){ //Determinar si requiere de analisis regulares
         return requiereAnalisisRegulares;
     }
     
-    public String getFechaInicioGeriatria(){
+    public String getFechaInicioGeriatria(){ //Obtener fecho de inicio de geriatria
         return fechaInicioGeriatria;
     }
     
-    public String getMedicamentosHabituales() {
+    public String getMedicamentosHabituales() { //Obtener los medicamentos habituales (AUN NO IMPLEMENTADO DEL TODO)
         return medicamentosHabituales;
     }
     
-    public void setMedicamentosHabituales(String medicamentos){
+    public void setMedicamentosHabituales(String medicamentos){ //Settear los medicamentos habituales (AUN NO IMPLEMENTADO DEL TODO)
         this.medicamentosHabituales = medicamentos;
     }
 }

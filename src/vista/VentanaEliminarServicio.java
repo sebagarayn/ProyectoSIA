@@ -120,7 +120,8 @@ public class VentanaEliminarServicio extends javax.swing.JFrame {
         btnEliminar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Eliminar Servicio");
 
         jLabel1.setText("RUT Cliente:");
 
@@ -131,6 +132,9 @@ public class VentanaEliminarServicio extends javax.swing.JFrame {
         txtRutCliente.setPreferredSize(new java.awt.Dimension(100, 20));
 
         comboMascotas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboMascotas.setMaximumSize(new java.awt.Dimension(80, 20));
+        comboMascotas.setMinimumSize(new java.awt.Dimension(80, 20));
+        comboMascotas.setPreferredSize(new java.awt.Dimension(80, 20));
 
         btnBuscarCliente.setText("Buscar Cliente");
 
@@ -193,7 +197,7 @@ public class VentanaEliminarServicio extends javax.swing.JFrame {
                         .addComponent(btnEliminar)
                         .addGap(53, 53, 53)
                         .addComponent(btnCancelar)))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,7 +218,7 @@ public class VentanaEliminarServicio extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEliminar)
                     .addComponent(btnCancelar))
-                .addContainerGap(107, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
 
         pack();

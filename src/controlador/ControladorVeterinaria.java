@@ -13,35 +13,44 @@ import util.ReporteManager;
 import persistencia.GestorCSV;
 import exception.*;
 
+/*Controlador principal de la aplicación Veterinaria.
+Maneja todos los eventos de menú y coordina las operaciones
+entre la vista (ventanas) y el modelo (clases de negocio).*/
+
 public class ControladorVeterinaria implements ActionListener {
-    private Veterinaria veterinaria;
-    private GestorCSV gestorCSV;
-    private VentanaMain main;
+    private Veterinaria veterinaria; //Modelo principal que gestiona clientes, mascotas y servicios
+    private GestorCSV gestorCSV; //Clase para cargar/guardar datos en archivos CSV
+    private VentanaMain main; //Ventana principal
     
-    //CLIENTES
+    //VENTANAS CLIENTES
     private VentanaAgregarCliente agregarCliente;
     private VentanaBuscarCliente buscarCliente;
     private VentanaEditarCliente editarCliente;
     private VentanaEliminarCliente eliminarCliente;
     
-    //MASCOTAS
+    //VENTANAS MASCOTAS
     private VentanaAgregarMascota agregarMascota;
     private VentanaBuscarMascota buscarMascota;
     private VentanaEditarMascota editarMascota;
     private VentanaEliminarMascota eliminarMascota;
     
-    //SERVICIOS
+    //VENTANAS SERVICIOS
     private VentanaAgregarServicio agregarServicio;
     private VentanaBuscarServicio buscarServicio;
     private VentanaEditarServicio editarServicio;
     private VentanaEliminarServicio eliminarServicio;
     
-    //REPORTES
+    //VENTANAS REPORTES Y ANALISIS
     private VentanaListarClientes listarClientes;
     private VentanaListarMascotas listarMascotas;
     private VentanaListarServicios listarServicios;
     private VentanaListarClientesFrecuentes listarClientesFrecuentes;
     
+    /*Inicializa la aplicación:
+    - Crea el modelo y carga datos desde CSV.
+    - Configura la ventana principal y registra los ActionListener
+    en cada opción de menú.*/    
+
     public void iniciar() {
         veterinaria = new Veterinaria(); //Iniciar veterinaria
         gestorCSV = new GestorCSV(); //Inicio del gestor de datos
@@ -50,7 +59,7 @@ public class ControladorVeterinaria implements ActionListener {
         veterinaria.verificarPromocionesPendientes(); //Se actualizan los estados
         
         main = new VentanaMain();
-        
+        //Asociar listeners a cada ítem de menú
         //CLIENTES
         main.getjMenuItemAgregarCliente().addActionListener(this);
         main.getjMenuItemBuscarCliente().addActionListener(this);
@@ -111,6 +120,7 @@ public class ControladorVeterinaria implements ActionListener {
             String direccion = agregarCliente.getjTextFieldDireccion().getText();
 
             try {
+                //Validar formatos antes de enviar al modelo
                 validarFormatoRUT(rut);
                 validarFormatoTelefono(telefono);
 
@@ -667,7 +677,7 @@ public class ControladorVeterinaria implements ActionListener {
                     return;
                 }
 
-                if(esUrgencia){ // Validar información adicional
+                if(esUrgencia){ // Validar información adicional si es urgencia
                     String motivoUrgencia = agregarServicio.getTxtMotivoUrgencia().getText().trim();
                     if(motivoUrgencia.isEmpty()){
                         JOptionPane.showMessageDialog(agregarServicio, "El motivo de urgencia es requerido para servicios de urgencia");
@@ -706,19 +716,19 @@ public class ControladorVeterinaria implements ActionListener {
                             ServicioUrgencia servicioUrgencia = new ServicioUrgencia(
                                     tipoServicio, fecha, hora, descripcion, precioFinal, estado,
                                     nivelUrgencia, motivoUrgencia, requiereAtencionInmediata);
-                            mascota.agregarServicio(servicioUrgencia);
+                            mascota.agregarServicio(servicioUrgencia); //Se crea el servicio de urgencia
        
-                            String mensaje = "Servicio de urgencia agregado correctamente\n\n";
+                            String mensaje = "Servicio de urgencia agregado correctamente\n\n"; //Se prepara el mensaje con detalles de urgencia
                             mensaje += "=== DETALLES DE URGENCIA ===\n";
                             mensaje += "Nivel: " + nivelUrgencia + "/5\n";
                             mensaje += "Motivo: " + motivoUrgencia + "\n";
                             mensaje += "Atención inmediata: " + (requiereAtencionInmediata ? "SÍ" : "NO") + "\n";
 
-                            int precioConRecargo = servicioUrgencia.calcularPrecioFinal();
+                            int precioConRecargo = servicioUrgencia.calcularPrecioFinal(); //Se calcula el recargo por urgencia
                             double porcentajeRecargo = ((double)precioConRecargo / precioFinal - 1) * 100;
                             mensaje += "Recargo aplicado: " + (int)porcentajeRecargo + "%\n";
 
-                            if(precioFinal < precio){
+                            if(precioFinal < precio){ //Mostrar información de descuento si es que aplica
                                 mensaje += "\nPrecio original: $" + precio;
                                 mensaje += "\nPrecio con descuentos: $" + precioFinal; 
                             }
@@ -726,8 +736,8 @@ public class ControladorVeterinaria implements ActionListener {
                             mensaje += "\n\n=== INSTRUCCIONES ===\n";
                             mensaje += servicioUrgencia.obtenerInstruccionesEspeciales();
 
-                            if (servicioUrgencia.esEmergenciaCritica()) {
-                                mensaje += "\n\n⚠️ EMERGENCIA CRÍTICA - PRIORIDAD MÁXIMA ⚠️";
+                            if (servicioUrgencia.esEmergenciaCritica()) { //Se muestra un mensaje segun el nivel de lo critico
+                                mensaje += "\n\nEMERGENCIA CRÍTICA - PRIORIDAD MÁXIMA️";
                                 JOptionPane.showMessageDialog(agregarServicio, mensaje, "Servicio de Urgencia Crítica", JOptionPane.ERROR_MESSAGE);
                             } else{
                                 JOptionPane.showMessageDialog(agregarServicio, mensaje, "Servicio de Urgencia", JOptionPane.WARNING_MESSAGE);
@@ -762,12 +772,12 @@ public class ControladorVeterinaria implements ActionListener {
                             "Cliente Frecuente", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } else{
-                        JOptionPane.showMessageDialog(agregarServicio, "Error: La mascota seleccionada no existe");                  
+                        JOptionPane.showMessageDialog(agregarServicio, "Error: La mascota seleccionada no existe"); //Error, mascota no existe          
                     }
                 } else{
-                    JOptionPane.showMessageDialog(agregarServicio, "Error: El cliente no existe");
+                    JOptionPane.showMessageDialog(agregarServicio, "Error: El cliente no existe"); //Error, cliente no existe
                 }
-                agregarServicio.dispose();
+                agregarServicio.dispose(); //Se cierra la ventana
 
             } catch (FormatoRUTInvalidoException e) { // Error de formato de RUT
                 JOptionPane.showMessageDialog(agregarServicio, e.getMessage(), "Error de formato de RUT", JOptionPane.ERROR_MESSAGE);
@@ -1157,28 +1167,28 @@ public class ControladorVeterinaria implements ActionListener {
 //==============================  MENU REPORTES  ===============================
         
         //LISTAR CLIENTES        
-        if(ae.getSource() == main.getjMenuItemListarClientes()){
+        if(ae.getSource() == main.getjMenuItemListarClientes()){ //Abrir ventana para mostrar lista de clientes
             listarClientes = new VentanaListarClientes(veterinaria);
             listarClientes.setVisible(true);
             return;
         }
         
         //LISTAR MASCOTAS        
-        if(ae.getSource() == main.getjMenuItemListarMascotas()){
+        if(ae.getSource() == main.getjMenuItemListarMascotas()){ //Abrir ventana para mostrar lista de mascotas
             listarMascotas = new VentanaListarMascotas(veterinaria);
             listarMascotas.setVisible(true);
             return;
         }    
         
         //LISTAR SERVICIOS
-        if(ae.getSource() == main.getjMenuItemListarServicios()){
+        if(ae.getSource() == main.getjMenuItemListarServicios()){ //Abrir ventana para mostrar lista de servicios
             listarServicios = new VentanaListarServicios(veterinaria);
             listarServicios.setVisible(true);
             return;
         }
         
         //LISTAR CLIENTES FRECUENTES
-        if(ae.getSource() == main.getjMenuItemListarClientesFrecuentes()){
+        if(ae.getSource() == main.getjMenuItemListarClientesFrecuentes()){ // Crear ventana de clientes frecuentes con sus botones
             listarClientesFrecuentes = new VentanaListarClientesFrecuentes(veterinaria);
             listarClientesFrecuentes.getBtnActualizar().addActionListener(this);
             listarClientesFrecuentes.getBtnCerrar().addActionListener(this);
@@ -1186,34 +1196,36 @@ public class ControladorVeterinaria implements ActionListener {
             return;
         }
         
-        if(listarClientesFrecuentes != null && ae.getSource() == listarClientesFrecuentes.getBtnActualizar()){
+        //LISTAR CLIENTES FRECUENTES - BOTÓN ACTUALIZAR
+        if(listarClientesFrecuentes != null && ae.getSource() == listarClientesFrecuentes.getBtnActualizar()){ //Verificar promociones pendientes y actualizar datos
             veterinaria.verificarPromocionesPendientes();
             listarClientesFrecuentes.cargarDatos();
             int cantidadClientes = veterinaria.obtenerClientesFrecuentes().size();
             JOptionPane.showMessageDialog(listarClientesFrecuentes, "Lista actualizada\n" + "Clientes frecuentes: " + cantidadClientes);            
         }
         
+        //LISTAR CLIENTES FRECUENTES - BOTÓN CERRAR
         if(listarClientesFrecuentes != null && ae.getSource() == listarClientesFrecuentes.getBtnCerrar()){
-            listarClientesFrecuentes.dispose();
+            listarClientesFrecuentes.dispose(); //Cerrar ventana de clientes frecuentes
             return;
         }
         
         //REPORTES TXT
-        if(ae.getSource() == main.getJMenuItemGenerarReporte()){ //Reporte txt y html
-            String nombrePersonalizado = JOptionPane.showInputDialog(main, "Ingrese el nombre para el reporte:", "Nombre del Reporte", JOptionPane.QUESTION_MESSAGE);
+        if(ae.getSource() == main.getJMenuItemGenerarReporte()){ //Reporte txt
+            String nombrePersonalizado = JOptionPane.showInputDialog(main, "Ingrese el nombre para el reporte:", "Nombre del Reporte", JOptionPane.QUESTION_MESSAGE); //Pedir nombre personalizado para el reporte
 
             if(nombrePersonalizado != null && !nombrePersonalizado.trim().isEmpty()){
-                ReporteManager reporte = new ReporteManager(veterinaria);
+                ReporteManager reporte = new ReporteManager(veterinaria); //Generar reporte con el nombre dado
                 reporte.guardarReportePersonalizado(nombrePersonalizado.trim());
                 JOptionPane.showMessageDialog(main, "Reporte generado exitosamente\nRevisa la carpeta 'Reportes'", "Reporte Generado", JOptionPane.INFORMATION_MESSAGE);
             }
-            else{
+            else{ //Si se cancela, o no se ingresa nombre
                 JOptionPane.showMessageDialog(main, "Generación de reporte cancelada", "Cancelado", JOptionPane.WARNING_MESSAGE);
             }
         }
         
-        //FUNCION UMBRAL
-        if (ae.getSource() == main.getjMenuItemAnalisisServicios()) {
+        //FUNCION ANALISIS SERVICIOS 
+        if (ae.getSource() == main.getjMenuItemAnalisisServicios()) { //Crear ventana de análisis con su controlador
             VentanaAnalisisServicios ventanaAnalisis = new VentanaAnalisisServicios();
             ControladorAnalisisServicios controladorAnalisis = new ControladorAnalisisServicios(veterinaria, ventanaAnalisis);
             ventanaAnalisis.setVisible(true);
@@ -1231,10 +1243,11 @@ public class ControladorVeterinaria implements ActionListener {
     }  
 
 //=======================  METODOS AUXILIARES  =================================
-    private void manejarSeleccionServicio() {
+    
+    private void manejarSeleccionServicio() { //Maneja la selección de servicios en la tabla de editar
         if(editarServicio != null){
             int filaSeleccionada = editarServicio.getTblServicios().getSelectedRow();
-            if(filaSeleccionada >= 0){
+            if(filaSeleccionada >= 0){ //Obtener datos de la fila seleccionada
                 javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel)editarServicio.getTblServicios().getModel();
                 String tipo = modelo.getValueAt(filaSeleccionada, 0).toString();
                 String fecha = modelo.getValueAt(filaSeleccionada, 1).toString();
@@ -1242,7 +1255,7 @@ public class ControladorVeterinaria implements ActionListener {
                 String descripcion = modelo.getValueAt(filaSeleccionada, 3).toString();
                 int precio = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 4).toString());
                 String estado = modelo.getValueAt(filaSeleccionada, 5).toString();
-                
+                //Crear objeto servicio y mostrarlo en los campos
                 Servicio servicio = new Servicio(tipo, fecha, hora, descripcion, precio, estado);
                 editarServicio.mostrarServicioEnCampos(servicio);
                 editarServicio.setIndiceServicioSeleccionado(filaSeleccionada);
@@ -1250,10 +1263,10 @@ public class ControladorVeterinaria implements ActionListener {
         }
     }
     
-    private void manejarSeleccionServicioEliminar() {
+    private void manejarSeleccionServicioEliminar() { //Maneja la selección de servicios en la tabla de eliminar
         if(eliminarServicio != null){
             int filaSeleccionada = eliminarServicio.getTblServicios().getSelectedRow();
-            if(filaSeleccionada >= 0){
+            if(filaSeleccionada >= 0){ //Mostrar el servicio seleccionado para confirmar eliminación
                 eliminarServicio.mostrarServicioSeleccionado(filaSeleccionada);
             }
         }
@@ -1261,19 +1274,19 @@ public class ControladorVeterinaria implements ActionListener {
     
 //============================EXCEPTIONS========================================
     
-    private void validarFormatoRUT(String rut) throws FormatoRUTInvalidoException {
+    private void validarFormatoRUT(String rut) throws FormatoRUTInvalidoException { //Valida que el RUT tenga el formato correcto
         if (rut == null || rut.trim().isEmpty()) {
             throw new FormatoRUTInvalidoException("El RUT no puede estar vacío");
         }
     
-        // Patrón para XX.XXX.XXX-X o XXXXXXXX-X
+        //Verificar formato: XX.XXX.XXX-X o XXXXXXXX-X
         if (!rut.matches("\\d{1,2}\\.\\d{3}\\.\\d{3}-[\\dkK]") && 
             !rut.matches("\\d{7,8}-[\\dkK]")) {
             throw new FormatoRUTInvalidoException("El formato del RUT debe ser XX.XXX.XXX-X o XXXXXXXX-X");
         }
     }
     
-    private void validarEdad(int edad) throws RangoInvalidoException {
+    private void validarEdad(int edad) throws RangoInvalidoException { //Valida que la edad esté en un rango válido
         if (edad <= 0) {
             throw new RangoInvalidoException("La edad debe ser mayor a 0");
         }
@@ -1282,7 +1295,7 @@ public class ControladorVeterinaria implements ActionListener {
         }
     }
     
-    private void validarPrecio(int precio) throws RangoInvalidoException {
+    private void validarPrecio(int precio) throws RangoInvalidoException { //Valida que el precio esté en un rango válido
         if (precio <= 0) {
             throw new RangoInvalidoException("El precio debe ser mayor a 0");
         }
@@ -1291,11 +1304,11 @@ public class ControladorVeterinaria implements ActionListener {
         }
     }
 
-    private void validarFormatoTelefono(String telefono) throws FormatoTelefonoInvalidoException {
+    private void validarFormatoTelefono(String telefono) throws FormatoTelefonoInvalidoException { //Valida que el teléfono tenga el formato correcto
         if (telefono == null || telefono.trim().isEmpty()) {
             throw new FormatoTelefonoInvalidoException("El teléfono no puede estar vacío");
         }
-        // Formato: +569XXXXXXXX o 9XXXXXXXX
+        //Verificar formato: +569XXXXXXXX o 9XXXXXXXX
         if (!telefono.matches("\\+569\\d{8}") && !telefono.matches("9\\d{8}")) {
             throw new FormatoTelefonoInvalidoException("El formato del teléfono debe ser +569XXXXXXXX o 9XXXXXXXX");
         }

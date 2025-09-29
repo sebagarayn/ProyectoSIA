@@ -55,7 +55,7 @@ public class Veterinaria {
         return mapaClientes.get(rut);
     }
     
-    public boolean editarCliente(String rut, String nuevoNombre, String nuevoTelefono, String nuevaDireccion){
+    public boolean editarCliente(String rut, String nuevoNombre, String nuevoTelefono, String nuevaDireccion){ //Para editar clientes
         Cliente cliente = buscarClientePorRut(rut);
         if(cliente != null){
             cliente.setNombre(nuevoNombre);
@@ -66,7 +66,7 @@ public class Veterinaria {
         return false;
     }
     
-    public boolean eliminarCliente(String rut){
+    public boolean eliminarCliente(String rut){ //Para eliminar clientes
         Cliente cliente = buscarClientePorRut(rut);
         if(cliente != null){
             if(!cliente.getMascotas().isEmpty()){
@@ -153,7 +153,7 @@ public class Veterinaria {
         return clientesFrecuentes;
     }
     
-    public void verificarPromocionesPendientes(){
+    public void verificarPromocionesPendientes(){ //Para verificar promciones pendientes, en caso de que estas no se hayan ya actualizado
         ArrayList<Cliente> clientesAPromover = new ArrayList<>();
         ArrayList<Cliente> clientesARevertir = new ArrayList<>();
         for (Cliente cliente : listaClientes) {
@@ -179,7 +179,7 @@ public class Veterinaria {
         }
     }
     
-    public boolean revertirAClienteRegular(String rut){
+    public boolean revertirAClienteRegular(String rut){ //En caso de que se eliminen servicios y no tenga los suficientes, se degrada el cliente frecuente a regular
         Cliente cliente = buscarClientePorRut(rut);
         if (cliente instanceof ClienteFrecuente) {
             String nombre = cliente.getNombre();
@@ -203,7 +203,7 @@ public class Veterinaria {
 
 //=============================  METODOS MASCOTAS  =============================
     
-    public boolean editarMascota(String rutCliente, String nombre, String tipo, String raza, int edad){
+    public boolean editarMascota(String rutCliente, String nombre, String tipo, String raza, int edad){ //Para editar mascotas
         Cliente cliente = buscarClientePorRut(rutCliente);
         if(cliente != null){
             return cliente.editarMascota(nombre, tipo, raza, edad);
@@ -211,7 +211,7 @@ public class Veterinaria {
         return false;
     }
     
-    public boolean eliminarMascota(String rutCliente, String nombreMascota){
+    public boolean eliminarMascota(String rutCliente, String nombreMascota){ //Para eliminar una mascota
         Cliente cliente = buscarClientePorRut(rutCliente);
         if(cliente != null){
             return cliente.eliminarMascota(nombreMascota);
@@ -221,7 +221,7 @@ public class Veterinaria {
     
     //MASCOTAS - GERIATRICAS
     
-    public boolean agregarMascotaGeriatrica(String rutDueno, String nombre, String tipo, String raza, int edad, String fechaInicioGeriatria){
+    public boolean agregarMascotaGeriatrica(String rutDueno, String nombre, String tipo, String raza, int edad, String fechaInicioGeriatria){ //Para agregar una mascota de tipo geriatrica
         Cliente dueno = buscarClientePorRut(rutDueno);
         if(dueno != null){
             MascotaGeriatrica mascotaGeriatrica = new MascotaGeriatrica(nombre, tipo, raza, edad, fechaInicioGeriatria);
@@ -231,7 +231,7 @@ public class Veterinaria {
         return false;
     }
     
-    public int obtenerCantidadMascotasGeriatricas(){
+    public int obtenerCantidadMascotasGeriatricas(){ //Obtener el numero de mascotas geriatricas
         int contador = 0;
         for(Cliente cliente : listaClientes){
             for(Mascota mascota : cliente.getMascotas()){
@@ -243,7 +243,7 @@ public class Veterinaria {
         return contador;
     }
     
-    public List<Mascota> obtenerMascotasGeriatricas(){
+    public List<Mascota> obtenerMascotasGeriatricas(){ //Obtener una lista de mascotas geriatricas
         List<Mascota> geriatricas = new ArrayList<>();
         for(Cliente cliente : listaClientes){
             for(Mascota mascota : cliente.getMascotas()){
@@ -257,7 +257,7 @@ public class Veterinaria {
     
     //========================  METODOS PARA SERVICIOS =========================
     
-    public List<Servicio> buscarServiciosPorMascota(String rutCliente, String nombreMascota){
+    public List<Servicio> buscarServiciosPorMascota(String rutCliente, String nombreMascota){ //Para buscar los servicios de una mascota
         Cliente cliente = buscarClientePorRut(rutCliente);
         if(cliente != null){
             Mascota mascota = cliente.buscarMascotaPorNombre(nombreMascota);
@@ -268,7 +268,7 @@ public class Veterinaria {
         return new ArrayList<>(); //Lista vacias
     }
     
-    public boolean editarServicio(String rutCliente, String nombreMascota, int indexServicio, Servicio servicioNuevo){
+    public boolean editarServicio(String rutCliente, String nombreMascota, int indexServicio, Servicio servicioNuevo){ //Para editar un servicio
         Cliente cliente = buscarClientePorRut(rutCliente);
         if(cliente != null){
             Mascota mascota = cliente.buscarMascotaPorNombre(nombreMascota);
@@ -279,7 +279,7 @@ public class Veterinaria {
         return false;
     }
     
-    public boolean eliminarServicio(String rutCliente, String nombreMascota, int indiceServicio){
+    public boolean eliminarServicio(String rutCliente, String nombreMascota, int indiceServicio){ //Para eliminar un servicio
         Cliente cliente = buscarClientePorRut(rutCliente);
         if(cliente != null){
             Mascota mascota = cliente.buscarMascotaPorNombre(nombreMascota);
@@ -292,7 +292,7 @@ public class Veterinaria {
     
 //=============================  FUNCION ESPECIAL  =============================
     
-    public List<Servicio> serviciosConCostoMayorA(int umbral) 
+    public List<Servicio> serviciosConCostoMayorA(int umbral) //Para obtener servicios con un precio mayor a un umbral
         throws RangoInvalidoException, ListaClientesVaciaException {
 
         if (umbral < 0) {
@@ -323,8 +323,8 @@ public class Veterinaria {
             }
         }
         return resultado;
-    }
-    
+    }  
+    //Para los filtros avanzados de los servicios
     public List<Servicio> filtroAvanzadoServicios(double precioMinimo, double precioMaximo, boolean soloClientesFrecuentes, boolean soloMascotasGeriatricas, boolean soloServiciosUrgencia)
         throws ListaClientesVaciaException, RangoInvalidoException{
         
@@ -363,7 +363,7 @@ public class Veterinaria {
         return resultado;
     }
     
-    public double[] calcularEstadisticas(List<Servicio> servicios){
+    public double[] calcularEstadisticas(List<Servicio> servicios){ //Para calcular estadisticas
         if(servicios.isEmpty()){
             return new double[]{0,0,0}; //Promedio, Total, Cantidad
         }
@@ -402,7 +402,7 @@ public class Veterinaria {
         return new int[] {clientesFrecuentes, mascotasGeriatricas, serviciosUrgencia};
     }
     
-    public List<Cliente> obtenerClientesUnicos(List<Servicio> servicios){
+    public List<Cliente> obtenerClientesUnicos(List<Servicio> servicios){ //Para obtener los clientes unicos, es decir, sin repetirlos
         List<Cliente> clientesUnicos = new ArrayList<>();
         for (Servicio s : servicios) {
             for (Cliente c : listaClientes) {
@@ -417,7 +417,7 @@ public class Veterinaria {
         return clientesUnicos;
     }
     
-    public List<Mascota> obtenerMascotasUnicas(List<Servicio> servicios){
+    public List<Mascota> obtenerMascotasUnicas(List<Servicio> servicios){ //Para obtener las mascotas unicas, es decir, sin repetirlas
         List<Mascota> mascotasUnicas = new ArrayList<>();
         for (Servicio s : servicios) {
             for (Cliente c : listaClientes) {
@@ -463,7 +463,7 @@ public class Veterinaria {
     }
 
 //==============================================================================
-    public String obtenerInformacionCompleta(String rut){
+    public String obtenerInformacionCompleta(String rut){ //Obtener la informacion completa de una mascota
         Cliente cliente = buscarClientePorRut(rut);
         if(cliente != null){
             StringBuilder info = new StringBuilder();
@@ -485,7 +485,7 @@ public class Veterinaria {
     }
     
 //===============METODOS NO UTILIZADOS, pero podrian ser util ==================
-    public List<ServicioUrgencia> obtenerServiciosUrgenciaCritica() {
+    public List<ServicioUrgencia> obtenerServiciosUrgenciaCritica() { //Para obtener servicios de urgencia critica
         List<ServicioUrgencia> serviciosCriticos = new ArrayList<>();
         for(Cliente cliente : listaClientes) {
             for(Mascota mascota : cliente.getMascotas()) {
@@ -502,7 +502,7 @@ public class Veterinaria {
         return serviciosCriticos;
     }
     
-    public int contarServiciosUrgencia(){
+    public int contarServiciosUrgencia(){ //Para contar los servicios de urgencia
         int contador = 0;
         for(Cliente cliente : listaClientes){
             for(Mascota mascota : cliente.getMascotas()) {

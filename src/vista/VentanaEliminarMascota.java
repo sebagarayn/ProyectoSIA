@@ -50,7 +50,8 @@ public class VentanaEliminarMascota extends javax.swing.JFrame {
         txtRutDueno = new javax.swing.JTextField();
         txtNombre = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Eliminar Mascota");
 
         btnEliminar.setText("Eliminar");
         btnEliminar.setEnabled(false);
@@ -60,13 +61,19 @@ public class VentanaEliminarMascota extends javax.swing.JFrame {
         btnCancelar.setText("Cancelar");
 
         txtTipo.setEditable(false);
-        txtTipo.setText("jTextField1");
+        txtTipo.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtTipo.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtTipo.setPreferredSize(new java.awt.Dimension(80, 20));
 
         txtEdad.setEditable(false);
-        txtEdad.setText("jTextField1");
+        txtEdad.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtEdad.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtEdad.setPreferredSize(new java.awt.Dimension(80, 20));
 
         txtRaza.setEditable(false);
-        txtRaza.setText("jTextField1");
+        txtRaza.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtRaza.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtRaza.setPreferredSize(new java.awt.Dimension(80, 20));
 
         jLabel1.setText("RUT");
 
@@ -78,9 +85,13 @@ public class VentanaEliminarMascota extends javax.swing.JFrame {
 
         jLabel5.setText("Edad");
 
-        txtRutDueno.setText("jTextField1");
+        txtRutDueno.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtRutDueno.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtRutDueno.setPreferredSize(new java.awt.Dimension(80, 20));
 
-        txtNombre.setText("jTextField1");
+        txtNombre.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtNombre.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtNombre.setPreferredSize(new java.awt.Dimension(80, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -110,7 +121,7 @@ public class VentanaEliminarMascota extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(txtRutDueno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(28, 28, 28)))
-                .addContainerGap(220, Short.MAX_VALUE))
+                .addContainerGap(211, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(116, 116, 116)
@@ -145,7 +156,7 @@ public class VentanaEliminarMascota extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(39, 39, 39)

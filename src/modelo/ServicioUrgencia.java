@@ -4,23 +4,21 @@ public class ServicioUrgencia extends Servicio{
     private int nivelUrgencia;
     private String motivoUrgencia;
     private boolean requiereAtencionInmediata;
-    private String profesionalAsignado;
     
     public ServicioUrgencia(String tipo, String fecha, String hora, String descripcion, int precio, String estado, int nivelUrgencia, String motivoUrgencia, boolean requiereAtencionInmediata){
         super(tipo, fecha, hora, descripcion, precio, estado);
         this.nivelUrgencia = nivelUrgencia;
         this.motivoUrgencia = motivoUrgencia;
         this.requiereAtencionInmediata = requiereAtencionInmediata;
-        this.profesionalAsignado = "";
     }
     
     @Override
-    public String obtenerTipoServicio(){
+    public String obtenerTipoServicio(){ //Se obtiene el tipo de servicio, en este caso para los de urgencia
         return "URGENCIA - " + getTipoServicio() + " (Nivel " + nivelUrgencia + ")";
     }
     
     @Override
-    public int calcularPrecioFinal(){
+    public int calcularPrecioFinal(){ //Para calcular el precio final, a partir de un recargo segun el nivel de urgencia
         double recargo;
         switch(nivelUrgencia){
             case 5: recargo = 1.75; break;
@@ -33,7 +31,7 @@ public class ServicioUrgencia extends Servicio{
     }
     
     @Override
-    public String obtenerInstruccionesEspeciales(){
+    public String obtenerInstruccionesEspeciales(){ //Se obtienen las instrucciones de un servicio de urgencia
         String instrucciones = "PROTOCOLO DE URGENCIA: ";
         if(nivelUrgencia >= 4){
             instrucciones += "- Atención inmediata requerida, ";
@@ -55,8 +53,6 @@ public class ServicioUrgencia extends Servicio{
     public void setMotivoUrgencia(String motivo) {this.motivoUrgencia = motivo;}
     public boolean isRequiereAtencionInmediata() {return requiereAtencionInmediata;}
     public void setRequiereAtencionInmediata(boolean requiere){this.requiereAtencionInmediata = requiere;}
-    public String getProfesionalAsignado() {return profesionalAsignado;}
-    public void setProfesionalAsignado(String profesional) {this.profesionalAsignado = profesional;}
     
     public boolean esEmergenciaCritica(){
         return nivelUrgencia >= 4 && requiereAtencionInmediata;

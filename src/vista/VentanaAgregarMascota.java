@@ -34,7 +34,8 @@ public class VentanaAgregarMascota extends javax.swing.JFrame {
         jButtonAgregar = new javax.swing.JButton();
         jTextFieldEdad = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Agregar Mascota");
 
         jButtonCancelar.setText("Cancelar");
 
@@ -48,23 +49,33 @@ public class VentanaAgregarMascota extends javax.swing.JFrame {
 
         jLabel6.setText("Edad de la mascota");
 
-        jTextFieldRutDueno.setText("jTextField1");
+        jTextFieldRutDueno.setMaximumSize(new java.awt.Dimension(80, 20));
+        jTextFieldRutDueno.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextFieldRutDueno.setPreferredSize(new java.awt.Dimension(80, 20));
 
-        jTextFieldNombre.setText("jTextField2");
+        jTextFieldNombre.setMaximumSize(new java.awt.Dimension(80, 20));
+        jTextFieldNombre.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextFieldNombre.setPreferredSize(new java.awt.Dimension(80, 20));
 
-        jTextFieldTipo.setText("jTextField3");
+        jTextFieldTipo.setMaximumSize(new java.awt.Dimension(80, 20));
+        jTextFieldTipo.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextFieldTipo.setPreferredSize(new java.awt.Dimension(80, 20));
 
-        jTextFieldRaza.setText("jTextField4");
+        jTextFieldRaza.setMaximumSize(new java.awt.Dimension(80, 20));
+        jTextFieldRaza.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextFieldRaza.setPreferredSize(new java.awt.Dimension(80, 20));
 
         jButtonAgregar.setText("Agregar");
 
-        jTextFieldEdad.setText("jTextField5");
+        jTextFieldEdad.setMaximumSize(new java.awt.Dimension(880, 20));
+        jTextFieldEdad.setMinimumSize(new java.awt.Dimension(80, 20));
+        jTextFieldEdad.setPreferredSize(new java.awt.Dimension(80, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 409, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(28, 28, 28)
@@ -123,7 +134,7 @@ public class VentanaAgregarMascota extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel6)
                         .addComponent(jTextFieldEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButtonAgregar)
                         .addComponent(jButtonCancelar))

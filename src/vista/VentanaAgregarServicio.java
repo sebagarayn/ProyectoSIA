@@ -143,17 +143,26 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
         txtMotivoUrgencia = new javax.swing.JTextField();
         chkAtencionInmediata = new javax.swing.JCheckBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Agregar Servicio");
 
-        txtRutDueno.setText("jTextField1");
+        txtRutDueno.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtRutDueno.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtRutDueno.setPreferredSize(new java.awt.Dimension(80, 20));
 
-        txtTipoServicio.setText("jTextField3");
+        txtTipoServicio.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtTipoServicio.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtTipoServicio.setPreferredSize(new java.awt.Dimension(80, 20));
 
-        txtFecha.setText("jTextField4");
+        txtFecha.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtFecha.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtFecha.setPreferredSize(new java.awt.Dimension(80, 20));
 
         btnAgregar.setText("Agregar");
 
-        txtDescripcion.setText("jTextField5");
+        txtDescripcion.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtDescripcion.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtDescripcion.setPreferredSize(new java.awt.Dimension(80, 20));
 
         btnCancelar.setText("Cancelar");
 
@@ -171,11 +180,15 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
 
         jLabel7.setText("Estado");
 
-        txtPrecio.setText("jTextField5");
+        txtPrecio.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtPrecio.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtPrecio.setPreferredSize(new java.awt.Dimension(80, 20));
 
         jLabel8.setText("Hora");
 
-        txtHora.setText("jTextField1");
+        txtHora.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtHora.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtHora.setPreferredSize(new java.awt.Dimension(80, 20));
 
         btnBuscar.setText("Buscar Cliente");
 
@@ -219,7 +232,6 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnCancelar)
                                 .addGap(53, 53, 53)))
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtMotivoUrgencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -302,7 +314,7 @@ public class VentanaAgregarServicio extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
                             .addComponent(comboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)

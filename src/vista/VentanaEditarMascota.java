@@ -61,30 +61,38 @@ public class VentanaEditarMascota extends javax.swing.JFrame {
 
         jLabel4.setText("Raza");
 
-        txtRutDueno.setText("jTextField1");
+        txtRutDueno.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtRutDueno.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtRutDueno.setPreferredSize(new java.awt.Dimension(80, 20));
         txtRutDueno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtRutDuenoActionPerformed(evt);
             }
         });
 
-        txtNombreMascota.setText("jTextField1");
+        txtNombreMascota.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtNombreMascota.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtNombreMascota.setPreferredSize(new java.awt.Dimension(80, 20));
         txtNombreMascota.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNombreMascotaActionPerformed(evt);
             }
         });
 
-        txtTipo.setText("jTextField1");
         txtTipo.setEnabled(false);
+        txtTipo.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtTipo.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtTipo.setPreferredSize(new java.awt.Dimension(80, 20));
         txtTipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtTipoActionPerformed(evt);
             }
         });
 
-        txtRaza.setText("jTextField1");
         txtRaza.setEnabled(false);
+        txtRaza.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtRaza.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtRaza.setPreferredSize(new java.awt.Dimension(80, 20));
         txtRaza.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtRazaActionPerformed(evt);
@@ -103,8 +111,10 @@ public class VentanaEditarMascota extends javax.swing.JFrame {
 
         jLabel5.setText("Edad");
 
-        txtEdad.setText("jTextField1");
         txtEdad.setEnabled(false);
+        txtEdad.setMaximumSize(new java.awt.Dimension(80, 20));
+        txtEdad.setMinimumSize(new java.awt.Dimension(80, 20));
+        txtEdad.setPreferredSize(new java.awt.Dimension(80, 20));
         txtEdad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtEdadActionPerformed(evt);
@@ -148,12 +158,12 @@ public class VentanaEditarMascota extends javax.swing.JFrame {
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
                                 .addComponent(txtNombreMascota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(121, Short.MAX_VALUE))
+                .addContainerGap(112, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(47, Short.MAX_VALUE)
+                .addContainerGap(55, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtRutDueno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
